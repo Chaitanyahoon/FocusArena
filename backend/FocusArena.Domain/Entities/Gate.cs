@@ -42,6 +42,9 @@ public class Gate
     
     public GateRank Rank { get; set; } = GateRank.E;
     
+    public int RequiredLevel { get; set; } = 1;
+    public int RecommendedPartySize { get; set; } = 1;
+    
     public GateStatus Status { get; set; } = GateStatus.Active;
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

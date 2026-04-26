@@ -66,3 +66,34 @@ export interface Gate {
   recommendedPartySize: number
   expiresAt: string
 }
+
+export interface LeaderboardEntry {
+  userId: number
+  name: string
+  avatarUrl?: string
+  xp: number
+  level: number
+  rank: number
+}
+
+export interface ChatUser {
+  id: number
+  name: string
+  avatarUrl?: string
+  lastMessage?: string
+  lastMessageTime?: string
+  unreadCount?: number
+  isOnline: boolean
+}
+
+export interface PrivateMessage {
+  id: number
+  senderId: number
+  senderName: string
+  senderAvatarUrl?: string
+  receiverId: number
+  content: string
+  sentAt: string
+  isRead: boolean
+  isMe: boolean
+}

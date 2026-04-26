@@ -66,17 +66,23 @@ public class GatesController : ControllerBase
         int playerLevel = user?.Level ?? 1;
 
         // Generate Domain Properties
-        var bossName = _proceduralService.GenerateBossNameFromKeywords(recentTasks);
-        var title = $"Assault: {bossName}";
-        var desc = $"A procedurally generated anomaly has appeared based on your recent activity. Defeat it.";
-
-        // We use GateRank C by default, but it can be specified. Actually, stats are mapped in the Gate entities upon creation but GateService expects XP/Gold to be hardcoded by rank switch-case.
-        // Wait! GateService.CreateGateAsync hardcodes XP/Gold! 
-        // We will just let GateService determine the XP/Gold based on the Rank we feed it. The procedural service determines BossName & dynamic HP if we had HP.
-        // But wait, Gate entity does not track CurrentHp by default, only BossMaxHp if we added it? Let me check Gate.cs again. 
-        // Gate.cs doesn't have HP natively! It has Status, Type, BossName.
+        var lore = _proceduralService.GenerateAnomalyLore(recentTasks, rank);
+        var stats = _proceduralService.GenerateBossStats(rank, playerLevel);
         
-        var gate = await _gateService.CreateGateAsync(userId, title, desc, rank, DateTime.UtcNow.AddDays(1), bossName, "Anomaly");
+        var title = $"Assault: {lore.BossName}";
+        var desc = lore.LoreDescription;
+
+        var gate = await _gateService.CreateGateAsync(
+            userId, 
+            title, 
+            desc, 
+            rank, 
+            DateTime.UtcNow.AddDays(1), 
+            lore.BossName, 
+            "Anomaly", 
+            stats.RequiredLevel, 
+            stats.RecommendedPartySize
+        );
         return CreatedAtAction(nameof(GetGate), new { id = gate.Id }, gate);
     }
 

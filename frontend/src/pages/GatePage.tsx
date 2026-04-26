@@ -112,13 +112,26 @@ export default function GatePage() {
                             <h3 className="text-xl font-bold text-white font-rajdhani mb-2 pr-12 group-hover:text-blue-400 transition-colors">
                                 {gate.title}
                             </h3>
-                            <p className="text-gray-400 text-sm mb-4 line-clamp-2 h-10">
+                            <p className="text-gray-400 text-sm mb-3 line-clamp-2 h-10">
                                 {gate.description || "No description provided."}
                             </p>
 
+                            {/* RPG Stats Badges */}
+                            <div className="flex gap-2 mb-4 font-mono text-[10px] tracking-wider">
+                                <span className="bg-blue-900/40 text-blue-300 border border-blue-800/50 px-2 py-1 rounded">
+                                    LV.{gate.requiredLevel || 1} REQ
+                                </span>
+                                <span className="bg-purple-900/40 text-purple-300 border border-purple-800/50 px-2 py-1 rounded">
+                                    {gate.recommendedPartySize || 1} PLAYER(S)
+                                </span>
+                                <span className="bg-gray-800/50 text-gray-400 border border-gray-700/50 px-2 py-1 rounded uppercase">
+                                    {gate.type || "DUNGEON"}
+                                </span>
+                            </div>
+
                             <div className="flex justify-between items-center text-xs text-gray-500 mb-4 font-mono">
                                 <span>Tasks: {gate.tasks?.length || 0}</span>
-                                <span>XP: {gate.xpReward}</span>
+                                <span className="text-yellow-500/80">XP: {gate.xpReward}</span>
                             </div>
 
                             <button

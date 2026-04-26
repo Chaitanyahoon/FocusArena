@@ -4,18 +4,34 @@ import { StyleSheet, View, ActivityIndicator } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import RootNavigator from './src/navigation/RootNavigator'
 import { useAppStore } from './src/stores/appStore'
+import { signalRService } from './src/services/signalr'
+import { notificationService } from './src/services/notifications'
 
 export default function App() {
-  const { init, booting } = useAppStore()
+  const { init, booting, auth } = useAppStore()
 
   useEffect(() => {
     init()
+    notificationService.initialize()
   }, [init])
+
+  // Connect/disconnect SignalR based on auth state
+  useEffect(() => {
+    if (auth) {
+      signalRService.connect()
+    } else {
+      signalRService.disconnect()
+    }
+
+    return () => {
+      signalRService.disconnect()
+    }
+  }, [auth])
 
   if (booting) {
     return (
       <View style={styles.bootScreen}>
-        <ActivityIndicator color="#F4F7FB" size="large" />
+        <ActivityIndicator color="#3b82f6" size="large" />
       </View>
     )
   }

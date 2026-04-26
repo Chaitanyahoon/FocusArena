@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { API_HEALTH_URL } from '../config'
 import { useAppStore } from '../stores/appStore'
@@ -36,217 +38,252 @@ export default function DashboardScreen() {
     ? Math.round((stats.completedTasks / stats.totalTasks) * 100)
     : 0
 
+  // Mock calculation for HP/XP bars based on data
+  const hpPercentage = 100 // Full HP by default unless tasks missed
+  const xpPercentage = Math.min((profile?.xp || 0) % 1000 / 10, 100)
+
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={styles.scrollContent}
-      refreshControl={<RefreshControl refreshing={dashboardLoading} onRefresh={hydrateDashboard} tintColor="#F4F7FB" />}
-    >
-      <View style={styles.heroCard}>
-        <View style={styles.heroTopRow}>
-          <View>
-            <Text style={styles.eyebrow}>Mobile command center</Text>
-            <Text style={styles.heroTitle}>Focus Arena</Text>
-            <Text style={styles.heroSubtitle}>Daily run briefing</Text>
-          </View>
-        </View>
-
-        <View style={styles.identityRow}>
-          <View style={styles.identitySeal}>
-            <Ionicons name="sparkles-outline" size={20} color="#08111F" />
-          </View>
-          <View style={styles.identityCopy}>
-            <Text style={styles.identityName}>{profile?.name || auth?.name}</Text>
-            <Text style={styles.identityMeta}>
-              Level {profile?.level || auth?.level}  •  {profile?.xp || auth?.xp} XP  •  Streak {profile?.streakCount || 0}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.healthRow}>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={<RefreshControl refreshing={dashboardLoading} onRefresh={hydrateDashboard} tintColor="#3b82f6" />}
+      >
+        <View style={styles.header}>
+          <Text style={styles.logoText}>FOCUS<Text style={{color: '#3b82f6'}}>ARENA</Text></Text>
           <View style={[styles.healthDot, serverState === 'slow' ? styles.healthDotSlow : styles.healthDotReady]} />
-          <Text style={styles.healthText}>
-            {serverState === 'slow' ? 'Backend is warming up.' : serverState === 'ready' ? 'Server ready.' : 'Checking backend.'}
-          </Text>
         </View>
-      </View>
 
-      <View style={styles.panel}>
-        <Text style={styles.panelLabel}>Today's objective</Text>
-        <Text style={styles.panelTitle}>{nextTask ? nextTask.title : 'Queue your first contract.'}</Text>
-        <Text style={styles.panelBody}>
-          {nextTask
-            ? 'The next task is already selected. Clear it here so the desktop and web clients stay in sync.'
-            : 'No active quests are loaded right now. Create one from mobile and keep the system moving.'}
-        </Text>
-        <View style={styles.statsRow}>
-          <View style={styles.statTile}>
-            <Text style={styles.statLabel}>Open</Text>
-            <Text style={styles.statValue}>{activeTasks.length}</Text>
+        <View style={styles.heroCard}>
+          <View style={styles.identityRow}>
+            <View style={styles.identitySeal}>
+              <Ionicons name="flash" size={24} color="#060913" />
+            </View>
+            <View style={styles.identityCopy}>
+              <Text style={styles.identityName}>{profile?.name || auth?.name || 'Hunter'}</Text>
+              <Text style={styles.identityLevel}>LEVEL {profile?.level || auth?.level || 1} HUNTER</Text>
+            </View>
           </View>
-          <View style={styles.statTile}>
-            <Text style={styles.statLabel}>Complete</Text>
-            <Text style={styles.statValue}>{stats?.completedTasks || 0}</Text>
-          </View>
-          <View style={styles.statTile}>
-            <Text style={styles.statLabel}>Daily rate</Text>
-            <Text style={styles.statValue}>{completionRatio}%</Text>
+
+          {/* Progress Bars */}
+          <View style={styles.progressContainer}>
+            <View style={styles.progressRow}>
+              <Text style={styles.progressLabel}>HP</Text>
+              <View style={styles.progressBarBg}>
+                <View style={[styles.progressBarFill, { width: `${hpPercentage}%`, backgroundColor: '#ef4444' }]} />
+              </View>
+              <Text style={styles.progressValue}>{hpPercentage}%</Text>
+            </View>
+            <View style={styles.progressRow}>
+              <Text style={styles.progressLabel}>XP</Text>
+              <View style={styles.progressBarBg}>
+                <View style={[styles.progressBarFill, { width: `${xpPercentage}%`, backgroundColor: '#3b82f6' }]} />
+              </View>
+              <Text style={styles.progressValue}>{profile?.xp || auth?.xp || 0}</Text>
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+
+        <View style={styles.panel}>
+          <Text style={styles.panelLabel}>CURRENT GATE OBJECTIVE</Text>
+          <Text style={styles.panelTitle}>{nextTask ? nextTask.title : 'No Active Gates.'}</Text>
+          <Text style={styles.panelBody}>
+            {nextTask
+              ? 'Clear this objective to gain experience and close the gate.'
+              : 'The dungeon is quiet. Tap the + button to open a new gate.'}
+          </Text>
+          
+          <View style={styles.statsRow}>
+            <View style={styles.statTile}>
+              <Text style={styles.statLabel}>Open Tasks</Text>
+              <Text style={styles.statValue}>{activeTasks.length}</Text>
+            </View>
+            <View style={styles.statTile}>
+              <Text style={styles.statLabel}>Completed</Text>
+              <Text style={styles.statValue}>{stats?.completedTasks || 0}</Text>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Floating Action Button for adding tasks */}
+      <TouchableOpacity 
+        style={styles.fab}
+        onPress={() => {
+          // Navigation logic or modal trigger to add task
+        }}
+      >
+        <Ionicons name="add" size={32} color="#fff" />
+      </TouchableOpacity>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#060913',
+  },
   scroll: {
     flex: 1,
-    backgroundColor: '#0A1020',
   },
   scrollContent: {
-    paddingHorizontal: 18,
-    paddingTop: 18,
-    paddingBottom: 42,
-    gap: 14,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 100, // Extra padding for bottom tabs & FAB
+    gap: 20,
   },
-  heroCard: {
-    borderRadius: 28,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(231, 237, 246, 0.08)',
-    backgroundColor: 'rgba(10, 14, 26, 0.82)',
-  },
-  heroTopRow: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 10,
   },
-  eyebrow: {
-    color: 'rgba(231, 237, 246, 0.42)',
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 2.2,
-    textTransform: 'uppercase',
+  logoText: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: 2,
+    fontFamily: 'System',
   },
-  heroTitle: {
-    marginTop: 8,
-    color: '#F4F7FB',
-    fontSize: 30,
-    fontWeight: '800',
-    letterSpacing: -0.6,
-  },
-  heroSubtitle: {
-    marginTop: 4,
-    color: 'rgba(231, 237, 246, 0.42)',
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.2,
-    textTransform: 'uppercase',
+  heroCard: {
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.2)',
+    backgroundColor: 'rgba(59, 130, 246, 0.05)',
   },
   identityRow: {
-    marginTop: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 15,
+    marginBottom: 20,
   },
   identitySeal: {
-    height: 46,
-    width: 46,
-    borderRadius: 18,
+    height: 50,
+    width: 50,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#B7F7D3',
+    backgroundColor: '#3b82f6',
   },
   identityCopy: {
     flex: 1,
   },
   identityName: {
-    color: '#F4F7FB',
-    fontSize: 18,
-    fontWeight: '800',
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: '900',
   },
-  identityMeta: {
-    marginTop: 4,
-    color: 'rgba(231, 237, 246, 0.48)',
+  identityLevel: {
+    color: '#3b82f6',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 1,
+    marginTop: 2,
   },
-  healthRow: {
-    marginTop: 18,
+  progressContainer: {
+    gap: 12,
+  },
+  progressRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+  },
+  progressLabel: {
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontSize: 12,
+    fontWeight: 'bold',
+    width: 20,
+  },
+  progressBarBg: {
+    flex: 1,
+    height: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  progressValue: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    width: 35,
+    textAlign: 'right',
   },
   healthDot: {
-    height: 9,
-    width: 9,
-    borderRadius: 999,
+    height: 10,
+    width: 10,
+    borderRadius: 5,
   },
   healthDotReady: { backgroundColor: '#34D399' },
   healthDotSlow: { backgroundColor: '#F59E0B' },
-  healthText: {
-    color: '#D7DFEA',
-    fontSize: 12,
-    fontWeight: '700',
-  },
   panel: {
-    borderRadius: 24,
-    padding: 18,
+    borderRadius: 20,
+    padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(231, 237, 246, 0.08)',
-    backgroundColor: 'rgba(9, 13, 24, 0.78)',
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
     gap: 12,
   },
   panelLabel: {
-    color: 'rgba(231, 237, 246, 0.42)',
-    fontSize: 11,
+    color: '#3b82f6',
+    fontSize: 10,
     fontWeight: '800',
-    letterSpacing: 2,
-    textTransform: 'uppercase',
+    letterSpacing: 1.5,
   },
   panelTitle: {
-    color: '#F4F7FB',
-    fontSize: 22,
-    fontWeight: '800',
-    letterSpacing: -0.4,
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   panelBody: {
-    color: 'rgba(231, 237, 246, 0.54)',
-    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 14,
     lineHeight: 20,
-    fontWeight: '600',
   },
   statsRow: {
     flexDirection: 'row',
     gap: 10,
-    marginTop: 8,
+    marginTop: 10,
   },
   statTile: {
     flex: 1,
-    borderRadius: 18,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    backgroundColor: 'rgba(0, 0, 0, 0.22)',
+    borderRadius: 12,
+    padding: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.05)',
   },
   statLabel: {
-    color: 'rgba(231, 237, 246, 0.34)',
+    color: 'rgba(255, 255, 255, 0.4)',
     fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 1.4,
-    textTransform: 'uppercase',
+    fontWeight: 'bold',
+    letterSpacing: 1,
+    marginBottom: 5,
   },
   statValue: {
-    marginTop: 6,
-    color: '#F4F7FB',
-    fontSize: 20,
-    fontWeight: '800',
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: '900',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 90, // Above the 65px tab bar
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#3b82f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#3b82f6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 })

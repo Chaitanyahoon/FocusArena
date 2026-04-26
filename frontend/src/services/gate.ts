@@ -24,6 +24,8 @@ export interface Gate {
     bossName: string
     type: string
     rank: GateRank
+    requiredLevel: number
+    recommendedPartySize: number
     status: GateStatus
     createdAt: string
     deadline?: string

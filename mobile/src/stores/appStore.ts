@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { setAuthToken, authAPI, profileAPI, analyticsAPI, taskAPI, gateAPI } from '../services/api'
 import { storage } from '../utils/storage'
+import { notificationService } from '../services/notifications'
 import type { AuthResponse, UserProfile, DashboardStats, Task, LoginDto, Gate } from '../types'
 
 interface AppState {
@@ -123,7 +124,12 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ gateLoading: true })
     try {
       const gates = await gateAPI.getActive()
-      set({ gate: gates.length > 0 ? gates[0] : null, error: '' })
+      const activeGate = gates.length > 0 ? gates[0] : null
+      set({ gate: activeGate, error: '' })
+      // Schedule expiry notification
+      if (activeGate?.expiresAt) {
+        notificationService.scheduleGateExpiry(activeGate.name, activeGate.expiresAt)
+      }
     } catch {
       set({ error: 'Failed to fetch the active gate.' })
     } finally {
@@ -136,6 +142,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     try {
       const newGate = await gateAPI.generateProcedural()
       set({ gate: newGate, error: '' })
+      // Schedule expiry notification for new gate
+      if (newGate?.expiresAt) {
+        notificationService.scheduleGateExpiry(newGate.name, newGate.expiresAt)
+      }
     } catch {
       set({ error: 'Failed to scan for an anomaly. The procedural engine might be offline.' })
     } finally {

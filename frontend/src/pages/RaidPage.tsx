@@ -162,6 +162,14 @@ export default function RaidPage() {
                     {gate.description && <p className="text-gray-500 text-sm mt-1 max-w-md">{gate.description}</p>}
                 </div>
                 <div className="text-right bg-black/30 rounded-lg border border-gray-800/50 p-3">
+                    <div className="flex justify-end gap-2 mb-2">
+                        <span className="bg-blue-900/40 text-blue-300 text-[9px] px-1.5 py-0.5 rounded font-mono border border-blue-800/50">
+                            LV.{gate.requiredLevel || 1} REQ
+                        </span>
+                        <span className="bg-purple-900/40 text-purple-300 text-[9px] px-1.5 py-0.5 rounded font-mono border border-purple-800/50">
+                            {gate.recommendedPartySize || 1} PLAYER(S)
+                        </span>
+                    </div>
                     <div className="text-[10px] text-gray-500 font-mono mb-1">BOUNTY</div>
                     <div className="text-cyan-400 font-black font-rajdhani text-lg">{gate.xpReward.toLocaleString()} XP</div>
                     <div className="text-yellow-400 font-bold font-rajdhani">{gate.goldReward.toLocaleString()} G</div>

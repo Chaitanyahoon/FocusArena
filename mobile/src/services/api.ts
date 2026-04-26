@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { API_BASE } from '../config'
-import type { AuthResponse, CreateTaskDto, LoginDto, DashboardStats, Task, UserProfile, Gate } from '../types'
+import type { AuthResponse, CreateTaskDto, LoginDto, DashboardStats, Task, UserProfile, Gate, LeaderboardEntry, ChatUser } from '../types'
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -63,6 +63,30 @@ export const gateAPI = {
 
   async generateProcedural() {
     const response = await api.post<Gate>('/gates/procedural')
+    return response.data
+  },
+}
+
+export const leaderboardAPI = {
+  async getGlobal(limit = 100) {
+    const response = await api.get<LeaderboardEntry[]>(`/leaderboard/global?limit=${limit}`)
+    return response.data
+  },
+
+  async getWeekly(limit = 100) {
+    const response = await api.get<LeaderboardEntry[]>(`/leaderboard/weekly?limit=${limit}`)
+    return response.data
+  },
+}
+
+export const chatAPI = {
+  async getRecentChats() {
+    const response = await api.get<ChatUser[]>('/chat/recent')
+    return response.data
+  },
+
+  async searchUsers(query: string) {
+    const response = await api.get<ChatUser[]>(`/chat/search?query=${query}`)
     return response.data
   },
 }

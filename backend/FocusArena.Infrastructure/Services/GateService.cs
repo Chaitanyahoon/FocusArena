@@ -32,7 +32,7 @@ public class GateService : IGateService
             .FirstOrDefaultAsync(g => g.Id == gateId);
     }
 
-    public async Task<Gate> CreateGateAsync(int userId, string title, string? description, GateRank rank, DateTime? deadline, string? bossName, string? type)
+    public async Task<Gate> CreateGateAsync(int userId, string title, string? description, GateRank rank, DateTime? deadline, string? bossName, string? type, int requiredLevel = 1, int recommendedPartySize = 1)
     {
         // Calculate Rewards based on Rank
         int xpReward = 0;
@@ -60,7 +60,9 @@ public class GateService : IGateService
             Status = GateStatus.Active,
             CreatedAt = DateTime.UtcNow,
             XPReward = xpReward,
-            GoldReward = goldReward
+            GoldReward = goldReward,
+            RequiredLevel = requiredLevel,
+            RecommendedPartySize = recommendedPartySize
         };
 
         _context.Gates.Add(gate);
@@ -145,7 +147,7 @@ public class GateService : IGateService
         return false;
     }
 
-    public async Task<List<Gate>> CreateGlobalGateAsync(string title, string? description, GateRank rank, DateTime? deadline, string? bossName, string? type)
+    public async Task<List<Gate>> CreateGlobalGateAsync(string title, string? description, GateRank rank, DateTime? deadline, string? bossName, string? type, int requiredLevel = 1, int recommendedPartySize = 1)
     {
         var users = await _context.Users.ToListAsync();
         var gates = new List<Gate>();
@@ -178,7 +180,9 @@ public class GateService : IGateService
                 Status = GateStatus.Active,
                 CreatedAt = DateTime.UtcNow,
                 XPReward = xpReward,
-                GoldReward = goldReward
+                GoldReward = goldReward,
+                RequiredLevel = requiredLevel,
+                RecommendedPartySize = recommendedPartySize
             };
             gates.Add(gate);
             _context.Gates.Add(gate);
