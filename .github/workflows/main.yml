@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main", "dev" ]
 
+permissions:
+  contents: write
+
 jobs:
   build-and-test-backend:
     name: Build & Test Backend (.NET 8)
@@ -117,3 +120,15 @@ jobs:
       with:
         name: focusarena-android-apk
         path: mobile/android/app/build/outputs/apk/release/app-release.apk
+
+    - name: Create Nightly Release
+      uses: softprops/action-gh-release@v2
+      if: github.ref == 'refs/heads/main'
+      with:
+        tag_name: nightly
+        name: "Nightly Build: Focus Arena Mobile"
+        body: "Download the attached APK to test the latest mobile changes on your Android device."
+        files: mobile/android/app/build/outputs/apk/release/app-release.apk
+        make_latest: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
