@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Focus Arena",
+    "slug": "focusarena-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#060913"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.focusarena.mobile"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

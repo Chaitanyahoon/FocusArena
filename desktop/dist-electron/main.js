@@ -1,6 +1,7 @@
-import { app, BrowserWindow, screen, shell, ipcMain, globalShortcut, Tray, Menu, nativeImage } from 'electron';
+import * as electron from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+const { app, BrowserWindow, screen, shell, ipcMain, globalShortcut, Tray, Menu, nativeImage } = electron;
 // Fix for transparent window on Windows (prevents black background)
 app.disableHardwareAcceleration();
 // Fix GPU disk cache crash on Windows

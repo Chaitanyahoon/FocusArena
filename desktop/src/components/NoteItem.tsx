@@ -18,7 +18,7 @@ const NoteItem = memo(({ item, theme, onDelete, index }: NoteItemProps) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ delay: index * 0.03 }}
-            className={`mb-2 p-4 rounded-2xl glass-light border border-white/5 hover:border-white/10 transition-all duration-300 group relative overflow-hidden`}
+            className="command-card group relative mb-2 overflow-hidden rounded-2xl p-4 transition-all duration-300"
         >
             <div className={`absolute top-0 left-0 w-1 h-full ${theme.accentClass} opacity-20`} />
             

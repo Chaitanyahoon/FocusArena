@@ -48,7 +48,7 @@ export default function LeaderboardOverlay({ onClose, theme, currentUserId }: Le
                 </div>
                 <button 
                     onClick={onClose}
-                    className="p-2.5 rounded-2xl glass-light hover:bg-white/10 text-white/40 hover:text-white transition-all shadow-xl"
+                    className="command-card p-2.5 rounded-2xl hover:bg-white/10 text-white/40 hover:text-white transition-all shadow-xl"
                 >
                     <XMarkIcon className="w-5 h-5" />
                 </button>
@@ -56,7 +56,7 @@ export default function LeaderboardOverlay({ onClose, theme, currentUserId }: Le
 
             {/* Toggle Tabs */}
             <div className="px-6 mb-6">
-                <div className="flex bg-white/5 rounded-2xl p-1 relative border border-white/5">
+                <div className="command-card flex rounded-2xl p-1 relative">
                     <motion.div
                         layoutId="rank-tab-bg"
                         className="absolute inset-1 bg-white/10 rounded-xl shadow-[0_0_10px_rgba(255,255,255,0.05)]"
@@ -104,7 +104,7 @@ export default function LeaderboardOverlay({ onClose, theme, currentUserId }: Le
                                 initial={{ opacity: 0, x: -8, scale: 0.98 }}
                                 animate={{ opacity: 1, x: 0, scale: 1 }}
                                 transition={{ delay: index * 0.04, duration: 0.35 }}
-                                className={`flex items-center gap-4 p-3.5 rounded-2xl transition-all duration-300 border ${isMe ? `bg-white/10 ${theme.border}` : 'bg-white/[0.03] border-white/[0.03]'}`}
+                                className={`command-card flex items-center gap-4 rounded-2xl p-3.5 transition-all duration-300 ${isMe ? `bg-white/10 ${theme.border}` : 'border-white/[0.03]'}`}
                             >
                                 <div className="flex items-center justify-center w-8 select-none">
                                     <span className={`text-xs font-black ${isTop3 ? (index === 0 ? 'text-amber-400' : index === 1 ? 'text-zinc-300' : 'text-orange-500') : 'text-white/20'}`}>

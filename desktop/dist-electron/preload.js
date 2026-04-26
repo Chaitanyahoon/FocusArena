@@ -1,4 +1,5 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import * as electron from 'electron';
+const { contextBridge, ipcRenderer } = electron;
 contextBridge.exposeInMainWorld('electron', {
     ipcRenderer: {
         send: (channel, ...args) => ipcRenderer.send(channel, ...args),

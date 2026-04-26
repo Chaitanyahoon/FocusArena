@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { focusAPI } from '../services/api'
+import { SoundService } from '../services/soundService'
 
 export type TimerMode = 'focus' | 'break'
 
@@ -58,7 +59,7 @@ export const useTimerStore = create<TimerStore>((set, get) => ({
             };
             
             // Audio feedback
-            import('../services/soundService').then(s => s.SoundService.playChime());
+            SoundService.playChime();
 
             // Background sync on finish
             focusAPI.sync({

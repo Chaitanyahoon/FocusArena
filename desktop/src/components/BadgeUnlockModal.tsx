@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/solid'
 import { useEffect } from 'react'
+import { SoundService } from '../services/soundService'
 
 interface BadgeUnlockModalProps {
     badgeName: string
@@ -10,11 +11,8 @@ interface BadgeUnlockModalProps {
 
 export default function BadgeUnlockModal({ badgeName, onClose, theme }: BadgeUnlockModalProps) {
     useEffect(() => {
-        // Play success chime when modal opens
         try {
-            const chime = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3')
-            chime.volume = 0.5
-            chime.play()
+            SoundService.playChime()
         } catch (e) {
             console.warn('Audio play failed', e)
         }
@@ -33,7 +31,7 @@ export default function BadgeUnlockModal({ badgeName, onClose, theme }: BadgeUnl
                     animate={{ scale: 1, y: 0, opacity: 1 }}
                     exit={{ scale: 0.8, y: 20, opacity: 0 }}
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                    className={`w-full max-w-[260px] ${theme.bg} glass border ${theme.border} rounded-[2.5rem] p-8 flex flex-col items-center text-center shadow-2xl relative overflow-hidden`}
+                    className={`desktop-shell w-full max-w-[260px] rounded-[2.5rem] p-8 flex flex-col items-center text-center shadow-2xl relative overflow-hidden`}
                 >
                     {/* Decorative shines */}
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-white/5 rounded-full blur-3xl -z-10" />
@@ -64,7 +62,7 @@ export default function BadgeUnlockModal({ badgeName, onClose, theme }: BadgeUnl
                     </div>
 
                     <div className="space-y-2">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 italic">New Achievement</span>
+                        <span className="section-label">New Achievement</span>
                         <h2 className="text-lg font-black text-white tracking-tight leading-tight">{badgeName}</h2>
                         <p className="text-[10px] text-white/40 font-medium uppercase tracking-widest leading-relaxed">
                             Arena Prestige Increased

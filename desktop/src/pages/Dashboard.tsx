@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { taskAPI, analyticsAPI } from '../services/api'
+import { taskAPI, analyticsAPI, leaderboardAPI } from '../services/api'
 import { type Task, TaskStatus, TaskCategory } from '../types'
 import type { DashboardStats } from '../types'
 import { useAuthStore } from '../stores/authStore'
@@ -37,6 +37,9 @@ const THEMES = [
         accent: 'zinc-100',
         accentClass: 'bg-zinc-100',
         accentText: 'text-zinc-100',
+        accentBorder: 'border-zinc-100/40',
+        accentBorderHover: 'hover:border-zinc-100/40',
+        accentSoft: 'bg-zinc-100/10',
         hover: 'hover:bg-zinc-900',
         active: 'bg-zinc-900',
         shadow: 'shadow-zinc-950/50'
@@ -50,6 +53,9 @@ const THEMES = [
         accent: 'indigo-500',
         accentClass: 'bg-indigo-500',
         accentText: 'text-indigo-400',
+        accentBorder: 'border-indigo-400/40',
+        accentBorderHover: 'hover:border-indigo-400/40',
+        accentSoft: 'bg-indigo-500/10',
         hover: 'hover:bg-slate-900',
         active: 'bg-slate-900',
         shadow: 'shadow-indigo-950/50'
@@ -63,6 +69,9 @@ const THEMES = [
         accent: 'emerald-500',
         accentClass: 'bg-emerald-500',
         accentText: 'text-emerald-400',
+        accentBorder: 'border-emerald-400/40',
+        accentBorderHover: 'hover:border-emerald-400/40',
+        accentSoft: 'bg-emerald-500/10',
         hover: 'hover:bg-stone-900',
         active: 'bg-stone-900',
         shadow: 'shadow-emerald-950/50'
@@ -76,6 +85,9 @@ const THEMES = [
         accent: 'rose-500',
         accentClass: 'bg-rose-500',
         accentText: 'text-rose-400',
+        accentBorder: 'border-rose-400/40',
+        accentBorderHover: 'hover:border-rose-400/40',
+        accentSoft: 'bg-rose-500/10',
         hover: 'hover:bg-neutral-900',
         active: 'bg-neutral-900',
         shadow: 'shadow-rose-950/50'
@@ -117,14 +129,13 @@ export default function Dashboard() {
 
     const fetchRank = async () => {
         try {
-            const { leaderboardAPI } = await import('../services/api')
             const global = await leaderboardAPI.getGlobal()
             const myRank = global.find(u => u.userId === user?.id)
             if (myRank) setUserRank(myRank.rank)
         } catch (error) {}
     }
 
-    const { secondsLeft, isRunning, mode, start, pause, reset, tick, toggleMode } = useTimerStore()
+    const { secondsLeft, isRunning, mode, start, pause, reset, tick, toggleMode, totalSessions } = useTimerStore()
 
     useEffect(() => {
         let interval: any
@@ -217,14 +228,28 @@ export default function Dashboard() {
 
     const activeTasks = tasks.filter(t => t.category !== TaskCategory.Note && t.status !== TaskStatus.Done)
     const todoCount = activeTasks.length
+    const nextTask = activeTasks[0]
+    const sessionsToday = totalSessions
+    const timerDuration = mode === 'focus' ? 25 * 60 : 5 * 60
+    const timerProgress = 1 - secondsLeft / timerDuration
 
     const progress = stats ? (stats.completedTasks / (stats.totalTasks || 1)) : 0
     // SVG Circle properties
     const strokeDasharray = 88 // 2 * PI * r (r=14) approx
 
     return (
-        <div className="w-screen h-screen flex items-start justify-end p-2 bg-transparent">
-            <AnimatePresence mode="wait">
+        <div className="relative h-screen w-screen overflow-hidden bg-transparent">
+            {!isMiniMode && (
+                <>
+                    <div className="desktop-stage absolute inset-0">
+                        <div className="desktop-viewport" />
+                    </div>
+                    <div className="ambient-orb-desktop right-[8%] top-[4%] h-32 w-32 bg-white/18" />
+                    <div className="ambient-orb-desktop bottom-[6%] left-[14%] h-40 w-40 bg-indigo-500/24" />
+                </>
+            )}
+            <div className={`relative z-10 flex h-full w-full items-start justify-end ${isMiniMode ? 'p-1.5' : 'p-2'}`}>
+                <AnimatePresence mode="wait">
                 {isMiniMode ? (
                     /* PILL MODE: 140x48 */
                     <motion.div
@@ -235,7 +260,7 @@ export default function Dashboard() {
                         exit={{ opacity: 0, scale: 0.8, y: -10 }}
                         transition={{ duration: 0.4, type: 'spring', stiffness: 200, damping: 20 }}
                         onClick={toggleMiniMode}
-                        className={`w-[130px] h-[40px] ${theme.bg} glass rounded-full flex items-center justify-between px-3 shadow-2xl app-drag-region cursor-pointer group border ${theme.border} ${isRunning ? 'timer-active' : ''}`}
+                        className={`desktop-shell h-[42px] w-[132px] rounded-full px-3 flex items-center justify-between app-drag-region cursor-pointer group ${isRunning ? 'timer-active' : ''}`}
                     >
                         <div className="flex flex-col items-start justify-center no-drag">
                             <span className="text-[10px] font-bold text-white/40 group-hover:text-white/80 transition-colors uppercase tracking-widest leading-none">
@@ -295,7 +320,7 @@ export default function Dashboard() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -20 }}
                         transition={{ duration: 0.4, type: 'spring', stiffness: 200, damping: 20 }}
-                        className={`w-[300px] h-[520px] ${theme.bg} glass rounded-[2rem] flex flex-col shadow-2xl border ${theme.border} overflow-hidden box-border`}
+                        className={`desktop-shell w-[300px] h-[520px] rounded-[2rem] flex flex-col overflow-hidden box-border`}
                     >
                         {/* Settings Overlay */}
                         <AnimatePresence>
@@ -307,13 +332,13 @@ export default function Dashboard() {
                                     className="absolute inset-0 bg-black/80 backdrop-blur-xl z-[60] p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar"
                                 >
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-xs font-black uppercase tracking-widest text-white/50">Palettes</h3>
+                                        <h3 className="section-label">Palette Vault</h3>
                                         <button onClick={() => setShowSettings(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors no-drag">
                                             <XMarkIcon className="w-5 h-5" />
                                         </button>
                                     </div>
                                     <div className="grid grid-cols-1 gap-3">
-                                        <div className="flex items-center justify-between p-4 rounded-2xl glass-light border border-white/5 no-drag mb-2">
+                                        <div className="command-card flex items-center justify-between rounded-2xl p-4 no-drag mb-2">
                                             <div className="flex flex-col gap-0.5">
                                                 <span className="text-xs font-bold text-white">Stealth Mode</span>
                                                 <span className="text-[10px] text-white/40">Hide from taskbar in Pill mode</span>
@@ -329,12 +354,12 @@ export default function Dashboard() {
                                             </button>
                                         </div>
 
-                                        <h3 className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1 mt-2">Palettes</h3>
+                                        <h3 className="section-label mt-2 mb-1">Palettes</h3>
                                         {THEMES.map(t => (
                                             <button
                                                 key={t.name}
                                                 onClick={() => { setTheme(t); setShowSettings(false) }}
-                                                className={`flex items-center justify-between p-3 rounded-2xl glass-light border transition-all no-drag ${theme.name === t.name ? 'border-white/20 bg-white/5' : 'border-transparent'}`}
+                                                className={`command-card flex items-center justify-between rounded-2xl p-3 transition-all no-drag ${theme.name === t.name ? 'border-white/20 bg-white/5' : 'border-transparent'}`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-3 h-3 rounded-full ${t.accentClass}`} />
@@ -375,13 +400,13 @@ export default function Dashboard() {
 
                         {/* User Prestige Hub */}
                         <div className="px-6 mb-2 no-drag">
-                            <div className="flex items-center gap-2 p-3 bg-white/[0.03] border border-white/[0.05] rounded-3xl relative overflow-hidden group">
+                            <div className="command-card flex items-center gap-2 rounded-3xl p-3 relative overflow-hidden group">
                                 <div className="absolute inset-0 bg-white/[0.01] -z-10 group-hover:bg-white/[0.04] transition-colors" />
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                                    <div className={`w-9 h-9 rounded-2xl ${theme.accentClass} flex items-center justify-center shadow-glow-accent opacity-80`}>
-                                        <SparklesIcon className={`w-5 h-5 ${theme.name === 'Obsidian' ? 'text-black' : 'text-white'}`} />
-                                    </div>
-                                    <div className="flex flex-col min-w-0">
+                                <div className={`w-9 h-9 rounded-2xl ${theme.accentClass} flex items-center justify-center shadow-glow-accent opacity-80`}>
+                                    <SparklesIcon className={`w-5 h-5 ${theme.name === 'Obsidian' ? 'text-black' : 'text-white'}`} />
+                                </div>
+                                <div className="flex flex-col min-w-0">
                                         <div className="flex items-center gap-1.5">
                                             <span className="text-white/80 text-[11px] font-black tracking-tight truncate">{user?.name || 'Hunter'}</span>
                                             <div className="px-1.5 py-0.5 rounded-md bg-white/5 border border-white/5">
@@ -393,6 +418,48 @@ export default function Dashboard() {
                                             <div className="w-[1px] h-2 bg-white/5" />
                                             <span className="text-[10px] text-white/30 font-bold tabular-nums">{user?.xp || 0} XP</span>
                                         </div>
+                                    </div>
+                                </div>
+                                <div className={`rounded-2xl border px-2.5 py-2 text-right ${theme.accentSoft} ${theme.accentBorder}`}>
+                                    <div className={`text-[9px] font-black uppercase tracking-[0.18em] ${theme.accentText}`}>Open</div>
+                                    <div className="text-sm font-black text-white tabular-nums">{todoCount}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="px-6 pb-2 no-drag">
+                            <div className="command-card rounded-[1.5rem] p-4">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="min-w-0">
+                                        <div className="section-label">Today&apos;s run</div>
+                                        <h2 className="mt-2 text-[16px] font-black tracking-tight text-white">
+                                            {nextTask ? nextTask.title : activeTab === 'notes' ? 'Log the next idea.' : 'No active quests queued.'}
+                                        </h2>
+                                        <p className="mt-1 text-[10px] leading-5 text-white/38">
+                                            {nextTask
+                                                ? `Next best action is already chosen. Clear it before the window closes.`
+                                                : activeTasks.length === 0
+                                                    ? 'Add one task to keep the desktop client useful as a daily cockpit.'
+                                                    : 'Capture a note or reset the session state before leaving.'}
+                                        </p>
+                                    </div>
+                                    <div className={`rounded-2xl px-3 py-2 text-right ${theme.accentSoft} border ${theme.accentBorder}`}>
+                                        <div className={`text-[9px] font-black uppercase tracking-[0.18em] ${theme.accentText}`}>Open</div>
+                                        <div className="text-lg font-black text-white">{todoCount}</div>
+                                    </div>
+                                </div>
+                                <div className="mt-4 grid grid-cols-3 gap-2">
+                                    <div className="rounded-2xl border border-white/6 bg-black/20 px-3 py-2.5">
+                                        <div className="section-label">Streak</div>
+                                        <div className="mt-1 text-sm font-black text-white tabular-nums">{stats?.currentStreak ?? user?.streakCount ?? 0}</div>
+                                    </div>
+                                    <div className="rounded-2xl border border-white/6 bg-black/20 px-3 py-2.5">
+                                        <div className="section-label">Sessions</div>
+                                        <div className="mt-1 text-sm font-black text-white tabular-nums">{sessionsToday}</div>
+                                    </div>
+                                    <div className="rounded-2xl border border-white/6 bg-black/20 px-3 py-2.5">
+                                        <div className="section-label">Focus</div>
+                                        <div className="mt-1 text-sm font-black text-white tabular-nums">{Math.round(timerProgress * 100)}%</div>
                                     </div>
                                 </div>
                             </div>
@@ -434,7 +501,7 @@ export default function Dashboard() {
                                 <motion.div 
                                     className={`h-full ${theme.accentClass}`}
                                     initial={false}
-                                    animate={{ width: `${(1 - secondsLeft / (mode === 'focus' ? 25 * 60 : 5 * 60)) * 100}%` }}
+                                    animate={{ width: `${timerProgress * 100}%` }}
                                     transition={{ duration: 1, ease: "linear" }}
                                 />
                             </div>
@@ -473,13 +540,13 @@ export default function Dashboard() {
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="h-full flex flex-col items-center justify-center gap-4 text-white/20 select-none pb-8"
+                                    className="h-full flex flex-col items-center justify-center gap-4 text-white/20 select-none pb-8"
                                     >
-                                        <div className="p-4 rounded-full border border-dashed border-white/10">
-                                            <PlusIcon className="w-8 h-8 opacity-20" />
+                                        <div className="command-card flex h-16 w-16 items-center justify-center rounded-full border-dashed">
+                                            <div className="h-2.5 w-2.5 rotate-45 rounded-sm bg-white/25" />
                                         </div>
                                         <p className="text-[10px] font-bold uppercase tracking-widest text-center">
-                                            Zero {activeTab} defined
+                                            {activeTab === 'quests' ? 'No contracts queued' : 'No notes captured'}
                                         </p>
                                     </motion.div>
                                 ) : (
@@ -527,7 +594,8 @@ export default function Dashboard() {
                         </div>
                     </motion.div>
                 )}
-            </AnimatePresence>
+                </AnimatePresence>
+            </div>
 
             {/* Overlays & Modals */}
             <AnimatePresence>

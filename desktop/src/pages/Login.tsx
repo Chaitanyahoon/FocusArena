@@ -43,172 +43,189 @@ export default function Login() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center h-full bg-zinc-950 relative overflow-hidden select-none">
-            {/* Drag region */}
-            <div className="absolute top-0 left-0 w-full h-10 app-drag-region z-50" />
+        <div className="desktop-stage select-none">
+            <div className="desktop-viewport">
+                <div className="desktop-viewport-inner relative flex h-full flex-col items-center justify-center overflow-hidden">
+                    <div className="absolute top-0 left-0 z-40 h-10 w-full app-drag-region" />
 
-            {/* Background radial gradients */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-white/[0.03] rounded-full blur-[60px] pointer-events-none" />
-            <div className="absolute bottom-0 left-1/4 w-[200px] h-[150px] bg-white/[0.02] rounded-full blur-[40px] pointer-events-none" />
-
-            <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, type: 'spring', stiffness: 180, damping: 24 }}
-                className="w-full px-6 relative z-10 space-y-5"
-            >
-                {/* Logo & Title */}
-                <div className="text-center space-y-2 pt-6">
-                    {/* Animated logo mark */}
-                    <motion.div
-                        className="flex items-center justify-center mb-4"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 18 }}
-                    >
-                        <div className="relative">
-                            <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/10 flex items-center justify-center shadow-xl">
-                                <div className="w-3 h-3 rounded-full bg-zinc-100 shadow-[0_0_12px_rgba(255,255,255,0.5)]" />
-                            </div>
-                            <div className="absolute -inset-1 rounded-2xl bg-white/[0.02] blur-md -z-10" />
-                        </div>
-                    </motion.div>
+                    <div className="ambient-orb-desktop left-[-4rem] top-[-3rem] h-44 w-44 bg-white/18" />
+                    <div className="ambient-orb-desktop bottom-[-5rem] right-[-3rem] h-56 w-56 bg-indigo-500/30" />
+                    <div className="ambient-orb-desktop left-[20%] bottom-[18%] h-36 w-36 bg-emerald-500/18" />
 
                     <motion.div
-                        initial={{ opacity: 0, y: 8 }}
+                        initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
+                        transition={{ duration: 0.5, type: 'spring', stiffness: 180, damping: 24 }}
+                        className="relative z-10 w-full px-5"
                     >
-                        <h1 className="text-[20px] font-black text-white tracking-tight">Focus Arena</h1>
-                        <p className="text-[10px] text-white/20 uppercase tracking-[0.25em] font-bold mt-1">Your productivity HQ</p>
-                    </motion.div>
-                </div>
+                        <div className="desktop-shell mx-auto w-full max-w-[290px] rounded-[2rem] px-5 pb-5 pt-6">
+                    {/* Logo & Title */}
+                            <div className="text-center space-y-2">
+                                <motion.div
+                                    className="mb-4 flex items-center justify-center"
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 18 }}
+                                >
+                                    <div className="relative">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-[1.25rem] border border-white/10 bg-white/[0.05] shadow-xl">
+                                            <div className="h-3.5 w-3.5 rounded-full bg-zinc-100 shadow-[0_0_14px_rgba(255,255,255,0.45)]" />
+                                        </div>
+                                        <div className="absolute -inset-2 -z-10 rounded-[1.5rem] bg-white/[0.02] blur-md" />
+                                    </div>
+                                </motion.div>
 
-                {/* Server status */}
-                <AnimatePresence>
-                    {serverWarm === 'slow' && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="overflow-hidden"
-                        >
-                            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/[0.08] border border-amber-500/20">
-                                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
-                                <span className="text-[10px] text-amber-400/80 font-medium">Server warming up — first login may be slow</span>
+                                <motion.div
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                >
+                                    <div className="section-label">Desktop command center</div>
+                                    <h1 className="mt-2 text-[22px] font-black tracking-tight text-gradient-desktop">Focus Arena</h1>
+                                    <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-white/22">Compact focus cockpit</p>
+                                </motion.div>
                             </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
 
-                {/* Form card */}
-                <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.25 }}
-                    className="bg-white/[0.03] border border-white/[0.07] rounded-3xl p-4 space-y-2.5 backdrop-blur-sm"
-                >
-                    <form onSubmit={handleSubmit} className="space-y-2.5">
+                            {/* Server status */}
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-5 overflow-hidden"
+                            >
+                                <div className={`command-card flex items-center gap-2 rounded-2xl px-4 py-3 ${serverWarm === 'slow'
+                                    ? 'border-amber-500/20 bg-amber-500/[0.08]'
+                                    : serverWarm === 'ready'
+                                        ? 'border-emerald-500/20 bg-emerald-500/[0.08]'
+                                        : ''}`}>
+                                    <div className={`status-dot flex-shrink-0 ${serverWarm === 'slow'
+                                        ? 'animate-pulse bg-amber-400 text-amber-400'
+                                        : serverWarm === 'ready'
+                                            ? 'bg-emerald-400 text-emerald-400'
+                                            : 'animate-pulse bg-white/35 text-white/35'}`} />
+                                    <span className={`text-[10px] font-medium ${serverWarm === 'slow'
+                                        ? 'text-amber-300/90'
+                                        : serverWarm === 'ready'
+                                            ? 'text-emerald-300/90'
+                                            : 'text-white/45'}`}>
+                                        {serverWarm === 'slow'
+                                            ? 'Server warming up. First login may take longer.'
+                                            : serverWarm === 'ready'
+                                                ? 'Server ready.'
+                                                : 'Checking server status.'}
+                                    </span>
+                                </div>
+                            </motion.div>
+
+                            {/* Form card */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.25 }}
+                                className="command-card mt-4 rounded-[1.5rem] p-4 backdrop-blur-sm"
+                            >
+                                <form onSubmit={handleSubmit} className="space-y-2.5">
                         {/* Email */}
-                        <div className="relative group">
-                            <div className="absolute inset-0 rounded-xl bg-white/[0.04] border border-white/[0.07] group-focus-within:border-white/20 group-focus-within:bg-white/[0.07] transition-all duration-200" />
-                            <input
-                                type="email"
-                                required
-                                placeholder="Email address"
-                                value={email}
-                                onChange={(e) => { setEmail(e.target.value); setError('') }}
-                                autoComplete="email"
-                                className="w-full bg-transparent text-[12px] text-white py-3 px-4 outline-none placeholder:text-white/20 relative z-10 font-medium"
-                            />
-                        </div>
+                                    <div className="relative group">
+                                        <div className="absolute inset-0 rounded-xl border border-white/[0.07] bg-white/[0.04] transition-all duration-200 group-focus-within:border-white/20 group-focus-within:bg-white/[0.07]" />
+                                        <input
+                                            type="email"
+                                            required
+                                            placeholder="Email address"
+                                            value={email}
+                                            onChange={(e) => { setEmail(e.target.value); setError('') }}
+                                            autoComplete="email"
+                                            className="relative z-10 w-full bg-transparent px-4 py-3 text-[12px] font-medium text-white outline-none placeholder:text-white/20"
+                                        />
+                                    </div>
 
                         {/* Password */}
-                        <div className="relative group">
-                            <div className="absolute inset-0 rounded-xl bg-white/[0.04] border border-white/[0.07] group-focus-within:border-white/20 group-focus-within:bg-white/[0.07] transition-all duration-200" />
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                required
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => { setPassword(e.target.value); setError('') }}
-                                autoComplete="current-password"
-                                className="w-full bg-transparent text-[12px] text-white py-3 pl-4 pr-10 outline-none placeholder:text-white/20 relative z-10 font-medium"
-                            />
-                            <button
-                                type="button"
-                                tabIndex={-1}
-                                onClick={() => setShowPassword(v => !v)}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-1 text-white/20 hover:text-white/50 transition-colors"
-                            >
-                                {showPassword
-                                    ? <EyeSlashIcon className="w-3.5 h-3.5" />
-                                    : <EyeIcon className="w-3.5 h-3.5" />
-                                }
-                            </button>
-                        </div>
+                                    <div className="relative group">
+                                        <div className="absolute inset-0 rounded-xl border border-white/[0.07] bg-white/[0.04] transition-all duration-200 group-focus-within:border-white/20 group-focus-within:bg-white/[0.07]" />
+                                        <input
+                                            type={showPassword ? 'text' : 'password'}
+                                            required
+                                            placeholder="Password"
+                                            value={password}
+                                            onChange={(e) => { setPassword(e.target.value); setError('') }}
+                                            autoComplete="current-password"
+                                            className="relative z-10 w-full bg-transparent py-3 pl-4 pr-10 text-[12px] font-medium text-white outline-none placeholder:text-white/20"
+                                        />
+                                        <button
+                                            type="button"
+                                            tabIndex={-1}
+                                            onClick={() => setShowPassword(v => !v)}
+                                            className="absolute right-3 top-1/2 z-20 -translate-y-1/2 p-1 text-white/20 transition-colors hover:text-white/50"
+                                        >
+                                            {showPassword
+                                                ? <EyeSlashIcon className="h-3.5 w-3.5" />
+                                                : <EyeIcon className="h-3.5 w-3.5" />
+                                            }
+                                        </button>
+                                    </div>
 
                         {/* Error message */}
-                        <AnimatePresence>
-                            {error && (
-                                <motion.p
-                                    initial={{ opacity: 0, y: -4 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -4 }}
-                                    className="text-[10px] text-red-400/80 font-medium px-1"
-                                >
-                                    {error}
-                                </motion.p>
-                            )}
-                        </AnimatePresence>
+                                    <AnimatePresence>
+                                        {error && (
+                                            <motion.p
+                                                initial={{ opacity: 0, y: -4 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -4 }}
+                                                className="rounded-xl border border-red-500/20 bg-red-500/[0.08] px-3 py-2 text-[10px] font-medium text-red-300/85"
+                                            >
+                                                {error}
+                                            </motion.p>
+                                        )}
+                                    </AnimatePresence>
 
                         {/* Submit */}
+                                    <button
+                                        type="submit"
+                                        disabled={isLoading || !email || !password}
+                                        className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-100 py-3 text-[11px] font-black uppercase tracking-[0.14em] text-zinc-950 shadow-lg transition-all duration-200 hover:bg-white active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-25"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <div className="h-3 w-3 animate-spin rounded-full border-[1.5px] border-zinc-400 border-t-zinc-900" />
+                                                <span>Signing in...</span>
+                                            </>
+                                        ) : 'Enter Arena'}
+                                    </button>
+                                </form>
+                            </motion.div>
+
+                            {/* Footer */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="pt-4 text-center"
+                            >
+                                <span className="text-[10px] text-white/15">No account? </span>
+                                <a
+                                    href="https://focusarenaa.vercel.app/register"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-[10px] font-bold text-white/30 transition-colors hover:text-white/60"
+                                >
+                                    Open web registration
+                                </a>
+                            </motion.div>
+                        </div>
+                    </motion.div>
+
+                    <div className="absolute right-3 top-3 z-50 no-drag">
                         <button
-                            type="submit"
-                            disabled={isLoading || !email || !password}
-                            className="w-full py-3 rounded-xl bg-zinc-100 text-zinc-950 text-[11px] font-black uppercase tracking-[0.12em] transition-all duration-200 hover:bg-white active:scale-[0.97] disabled:opacity-25 disabled:cursor-not-allowed shadow-lg flex items-center justify-center gap-2 mt-1"
+                            onClick={() => {
+                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                const ipc = (window as any).electron?.ipcRenderer
+                                if (ipc) ipc.send('quit-app')
+                            }}
+                            className="rounded-full border border-white/8 bg-black/15 p-2 text-white/30 transition-colors hover:bg-white/10 hover:text-white"
                         >
-                            {isLoading ? (
-                                <>
-                                    <div className="w-3 h-3 rounded-full border-[1.5px] border-zinc-400 border-t-zinc-900 animate-spin" />
-                                    <span>Signing in...</span>
-                                </>
-                            ) : 'Enter Arena'}
+                            <XMarkIcon className="h-4 w-4" />
                         </button>
-                    </form>
-                </motion.div>
-
-                {/* Footer */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="text-center pb-4"
-                >
-                    <span className="text-[10px] text-white/15">No account? </span>
-                    <a
-                        href="https://focusarenaa.vercel.app/register"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-[10px] text-white/30 hover:text-white/60 transition-colors font-bold"
-                    >
-                        Register on web ↗
-                    </a>
-                </motion.div>
-            </motion.div>
-
-            {/* Close App Button */}
-            <div className="absolute top-4 right-4 z-50 no-drag">
-                <button
-                    onClick={() => {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const ipc = (window as any).electron?.ipcRenderer
-                        if (ipc) ipc.send('quit-app')
-                    }}
-                    className="p-2 rounded-full text-white/30 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                    <XMarkIcon className="w-4 h-4" />
-                </button>
+                    </div>
+                </div>
             </div>
         </div>
     )

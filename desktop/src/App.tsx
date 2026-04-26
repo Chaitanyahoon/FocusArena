@@ -12,11 +12,21 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-[#09090b] text-white gap-4 app-drag-region">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white/40"></div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white/30">Focus Arena</span>
-          <span className="text-[9px] text-white/15 uppercase tracking-widest">Connecting to Arena...</span>
+      <div className="desktop-stage">
+        <div className="desktop-viewport">
+          <div className="desktop-viewport-inner relative flex h-full items-center justify-center overflow-hidden text-white app-drag-region">
+            <div className="ambient-orb-desktop left-[-4rem] top-[-2rem] h-40 w-40 bg-white/20" />
+            <div className="ambient-orb-desktop bottom-[-3rem] right-[-2rem] h-44 w-44 bg-indigo-500/30" />
+            <div className="command-card rounded-[2rem] px-8 py-7 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.04]">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-white/70" />
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <span className="section-label">Focus Arena Desktop</span>
+                <span className="text-[11px] uppercase tracking-[0.22em] text-white/24">Connecting to Arena</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )

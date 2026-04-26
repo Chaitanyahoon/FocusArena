@@ -2,7 +2,7 @@
 const PRODUCTION_API = 'https://focusarenaa.onrender.com'
 
 // Detect if running in Electron dev mode
-const isElectronDev = false // window.location.hostname === 'localhost' && window.location.port === '5173'
+const isElectronDev = import.meta.env.DEV
 
 export const API_BASE = isElectronDev
     ? 'http://localhost:5134/api' // Point to local backend directly (or via proxy)

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { authAPI } from '../services/api'
+import { authAPI, profileAPI } from '../services/api'
 import type { User, AuthResponse, LoginDto, RegisterDto } from '../types'
 
 interface AuthStore {
@@ -52,7 +52,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
                 isLoading: false
             })
             // Fetch full profile to get avatar, gold, theme, etc.
-            const { profileAPI } = await import('../services/api')
             const userProfile = await profileAPI.get()
             set({
                 user: {
@@ -127,7 +126,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     fetchProfile: async () => {
         try {
-            const { profileAPI } = await import('../services/api')
             const userProfile = await profileAPI.get()
 
             const user: User = {
@@ -160,8 +158,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
         set({ isLoading: true })
         try {
-            const { profileAPI } = await import('../services/api')
-
             // 10s timeout — handles Render free-tier cold starts
             const timeoutPromise = new Promise<never>((_, reject) =>
                 setTimeout(() => reject(new Error('Request timed out')), 10000)

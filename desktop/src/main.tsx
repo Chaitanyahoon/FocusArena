@@ -11,8 +11,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <App />
       <Toaster position="bottom-center" toastOptions={{
         style: {
-          background: '#333',
-          color: '#fff',
+          background: 'rgba(6, 10, 18, 0.94)',
+          color: '#f8fafc',
+          border: '1px solid rgba(255,255,255,0.08)',
+          borderRadius: '16px',
+          fontSize: '11px',
+          fontWeight: '700',
+          boxShadow: '0 18px 40px rgba(0,0,0,0.35)',
         }
       }} />
     </HashRouter>

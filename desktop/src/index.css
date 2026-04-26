@@ -26,6 +26,65 @@ body {
   background-color: transparent !important;
 }
 
+.desktop-stage {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+}
+
+.desktop-viewport {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(10, 14, 26, 0.94), rgba(4, 8, 18, 0.88)),
+    rgba(4, 7, 14, 0.8);
+  box-shadow:
+    0 32px 70px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -20px 40px rgba(0, 0, 0, 0.18);
+  isolation: isolate;
+}
+
+.desktop-viewport::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.08), transparent 18rem),
+    radial-gradient(circle at 84% 18%, rgba(99, 102, 241, 0.14), transparent 16rem),
+    radial-gradient(circle at 52% 100%, rgba(16, 185, 129, 0.09), transparent 22rem),
+    linear-gradient(180deg, rgba(3, 7, 18, 0.96), rgba(2, 6, 23, 0.88));
+}
+
+.desktop-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+}
+
+.desktop-viewport-inner {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+}
+
 .app-drag-region {
   -webkit-app-region: drag;
 }
@@ -51,6 +110,79 @@ a {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.desktop-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+    rgba(8, 12, 22, 0.84);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.desktop-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.06), transparent 38%),
+    linear-gradient(135deg, rgba(99, 102, 241, 0.08), transparent 32%);
+}
+
+.command-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 32%),
+    rgba(255, 255, 255, 0.03);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 18px 36px rgba(0, 0, 0, 0.22);
+}
+
+.command-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.05) 45%, transparent 52%);
+  transform: translateX(-120%);
+  transition: transform 700ms ease;
+}
+
+.command-card:hover::after {
+  transform: translateX(120%);
+}
+
+.section-label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+}
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 0 14px currentColor;
+}
+
+.ambient-orb-desktop {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(40px);
+  pointer-events: none;
+  opacity: 0.26;
 }
 
 /* Custom Scrollbar */
@@ -92,4 +224,10 @@ a {
 
 .timer-active {
   animation: timer-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.text-gradient-desktop {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(161, 161, 170, 0.72));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

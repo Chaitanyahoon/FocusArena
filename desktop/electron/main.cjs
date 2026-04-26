@@ -1,54 +1,46 @@
-import { app, BrowserWindow, screen, shell, ipcMain, globalShortcut, Tray, Menu, nativeImage } from 'electron'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+const { app, BrowserWindow, screen, shell, ipcMain, globalShortcut, Tray, Menu, nativeImage } = require('electron')
+const path = require('node:path')
 
-// Fix for transparent window on Windows (prevents black background)
 app.disableHardwareAcceleration()
-
-// Fix GPU disk cache crash on Windows
 app.commandLine.appendSwitch('no-sandbox')
-app.commandLine.appendSwitch('disable-gpu-sandbox') 
+app.commandLine.appendSwitch('disable-gpu-sandbox')
 app.commandLine.appendSwitch('disable-software-rasterizer')
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// @ts-ignore
 process.env.DIST = path.join(__dirname, '../dist')
-// @ts-ignore
 process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(process.env.DIST, '../public')
 
-let win: BrowserWindow | null
-let tray: Tray | null = null
+let win = null
+let tray = null
 
-const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
+const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
 function createTray() {
     const iconPath = path.join(process.env.VITE_PUBLIC || '', 'icon.png')
     const icon = nativeImage.createFromPath(iconPath)
-    
+
     tray = new Tray(icon.resize({ width: 16, height: 16 }))
     tray.setToolTip('Focus Arena')
 
     const contextMenu = Menu.buildFromTemplate([
         { label: 'Focus Arena', enabled: false },
         { type: 'separator' },
-        { 
-            label: 'Show Dashboard', 
+        {
+            label: 'Show Dashboard',
             click: () => {
                 if (win) {
                     win.show()
-                    win.webContents.send('toggle-mini-mode', false) // Expand
+                    win.webContents.send('toggle-mini-mode', false)
                 }
-            } 
+            }
         },
-        { 
-            label: 'Minimize to Pill', 
+        {
+            label: 'Minimize to Pill',
             click: () => {
                 if (win) {
                     win.show()
-                    win.webContents.send('toggle-mini-mode', true) // Minimize
+                    win.webContents.send('toggle-mini-mode', true)
                 }
-            } 
+            }
         },
         { type: 'separator' },
         { label: 'Quit', click: () => app.quit() }
@@ -56,12 +48,11 @@ function createTray() {
 
     tray.setContextMenu(contextMenu)
     tray.on('click', () => {
-        if (win) {
-            if (win.isVisible()) {
-                win.focus()
-            } else {
-                win.show()
-            }
+        if (!win) return
+        if (win.isVisible()) {
+            win.focus()
+        } else {
+            win.show()
         }
     })
 }
@@ -75,8 +66,9 @@ function createWindow() {
         x: width - 340,
         y: 40,
         icon: path.join(process.env.VITE_PUBLIC || '', 'icon.png'),
+        backgroundColor: '#00000000',
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: path.join(__dirname, 'preload.cjs'),
             nodeIntegration: true,
             contextIsolation: true,
         },
@@ -92,49 +84,42 @@ function createWindow() {
 
     win.setSkipTaskbar(false)
 
-    // Open urls in the user's browser
-    win.webContents.setWindowOpenHandler((edata) => {
-        shell.openExternal(edata.url)
+    win.webContents.setWindowOpenHandler((details) => {
+        shell.openExternal(details.url)
         return { action: 'deny' }
     })
 
-    // IPC for resizing with anchoring to top-right
     ipcMain.on('resize-window', (_event, width, height) => {
         if (!win) return
         const bounds = win.getBounds()
-        
-        // Anchor to Top-Right: Adjust X to maintain Right edge
         const rightEdge = bounds.x + bounds.width
         const newX = rightEdge - width
 
         win.setBounds({
             x: Math.round(newX),
-            y: bounds.y, // Maintain current Y
+            y: bounds.y,
             width: Math.round(width),
             height: Math.round(height)
-        }, true) // animate true
+        }, true)
     })
 
-    // IPC for taskbar visibility toggling (Stealth Mode)
     ipcMain.on('update-taskbar-visibility', (_event, shouldSkip) => {
         if (win) {
             win.setSkipTaskbar(shouldSkip)
         }
     })
 
-    // IPC for application quitting
     ipcMain.on('quit-app', () => {
         app.quit()
     })
 
-    // Register Global Shortcut: Alt+Z (Common for productivity apps)
-    const ret = globalShortcut.register('Alt+Z', () => {
+    const registered = globalShortcut.register('Alt+Z', () => {
         if (win) {
             win.webContents.send('toggle-mini-mode')
         }
     })
 
-    if (!ret) {
+    if (!registered) {
         console.warn('Registration failed for Alt+Z')
     }
 
@@ -162,12 +147,12 @@ app.on('activate', () => {
 app.whenReady().then(() => {
     try {
         createWindow()
-    } catch (e) {
-        console.error('Failed to create window:', e)
+    } catch (error) {
+        console.error('Failed to create window:', error)
     }
     try {
         createTray()
-    } catch (e) {
-        console.error('Failed to create tray (non-fatal):', e)
+    } catch (error) {
+        console.error('Failed to create tray (non-fatal):', error)
     }
 })
