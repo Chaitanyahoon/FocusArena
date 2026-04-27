@@ -70,10 +70,6 @@ export default function Quests() {
             // Trigger a level up check or refresh profile if needed
             // (The store handles basic task list updates)
         } catch (error) {
-
-            // Trigger a level up check or refresh profile if needed
-            // (The store handles basic task list updates)
-        } catch (error) {
             toast.error('System Error: Completion Failed')
         } finally {
             setIsCompleting(null)
