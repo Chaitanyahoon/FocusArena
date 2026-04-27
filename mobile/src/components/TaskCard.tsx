@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Pressable } from 'react-native'
 import type { Task } from '../types'
+import { mobileTheme } from '../theme'
 
 function getTaskCategoryLabel(category: number) {
   switch (category) {
@@ -66,10 +67,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
-    backgroundColor: 'rgba(255, 255, 255, 0.035)',
+    borderColor: mobileTheme.borderSoft,
+    backgroundColor: mobileTheme.panel,
     gap: 10,
-    marginBottom: 12, // Used for FlatList spacing
+    marginBottom: 12,
   },
   taskHeader: {
     flexDirection: 'row',
@@ -82,17 +83,17 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   taskToneLow: { backgroundColor: '#34D399' },
-  taskToneMid: { backgroundColor: '#60A5FA' },
+  taskToneMid: { backgroundColor: mobileTheme.accent },
   taskToneHigh: { backgroundColor: '#FB7185' },
   taskCategory: {
-    color: 'rgba(231, 237, 246, 0.42)',
+    color: mobileTheme.textDim,
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },
   taskTitle: {
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 16,
     fontWeight: '800',
     lineHeight: 22,
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   taskMeta: {
-    color: 'rgba(231, 237, 246, 0.5)',
+    color: mobileTheme.textMuted,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -122,15 +123,15 @@ const styles = StyleSheet.create({
   },
   completeButton: {
     borderRadius: 14,
-    backgroundColor: '#B7F7D3',
-    paddingHorizontal: 16, // Expanded touch target
-    paddingVertical: 12,  // Ensure minimum 44px-48px height visually
+    backgroundColor: mobileTheme.accent,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     minWidth: 100,
     alignItems: 'center',
     justifyContent: 'center',
   },
   completeButtonLabel: {
-    color: '#08111F',
+    color: mobileTheme.text,
     fontSize: 11,
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -139,3 +140,5 @@ const styles = StyleSheet.create({
 })
 
 export default TaskCard
+
+// aria-label

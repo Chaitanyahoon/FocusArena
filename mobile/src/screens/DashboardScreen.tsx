@@ -9,10 +9,14 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+import { LinearGradient } from 'expo-linear-gradient'
 import { API_HEALTH_URL } from '../config'
 import { useAppStore } from '../stores/appStore'
+import { mobileTheme } from '../theme'
 
 export default function DashboardScreen() {
+  const navigation = useNavigation<any>()
   const { auth, profile, stats, tasks, hydrateDashboard, dashboardLoading } = useAppStore()
   const [serverState, setServerState] = useState<'checking' | 'ready' | 'slow'>('checking')
 
@@ -37,35 +41,68 @@ export default function DashboardScreen() {
   const completionRatio = stats && stats.totalTasks > 0
     ? Math.round((stats.completedTasks / stats.totalTasks) * 100)
     : 0
-
-  // Mock calculation for HP/XP bars based on data
-  const hpPercentage = 100 // Full HP by default unless tasks missed
+  const hunterLevel = profile?.level || auth?.level || 1
+  const hunterName = profile?.name || auth?.name || 'Hunter'
   const xpPercentage = Math.min((profile?.xp || 0) % 1000 / 10, 100)
+  const currentStreak = profile?.streakCount || stats?.currentStreak || 0
+  const hpPercentage = Math.max(38, 100 - Math.min(activeTasks.length * 6, 46))
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={dashboardLoading} onRefresh={hydrateDashboard} tintColor="#3b82f6" />}
+        refreshControl={<RefreshControl refreshing={dashboardLoading} onRefresh={hydrateDashboard} tintColor={mobileTheme.accent} />}
       >
         <View style={styles.header}>
-          <Text style={styles.logoText}>FOCUS<Text style={{color: '#3b82f6'}}>ARENA</Text></Text>
-          <View style={[styles.healthDot, serverState === 'slow' ? styles.healthDotSlow : styles.healthDotReady]} />
+          <View>
+            <Text style={styles.logoText}>FOCUS<Text style={{color: mobileTheme.accent}}>ARENA</Text></Text>
+            <Text style={styles.headerCaption}>Hunter system</Text>
+          </View>
+          <View style={styles.headerStatus}>
+            <View style={[styles.healthDot, serverState === 'slow' ? styles.healthDotSlow : styles.healthDotReady]} />
+            <Text style={styles.headerStatusText}>{serverState === 'ready' ? 'SYNC' : 'DELAY'}</Text>
+          </View>
         </View>
 
-        <View style={styles.heroCard}>
-          <View style={styles.identityRow}>
-            <View style={styles.identitySeal}>
-              <Ionicons name="flash" size={24} color="#060913" />
+        <LinearGradient
+          colors={['rgba(124,92,255,0.24)', 'rgba(16,21,34,0.96)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.heroCard}
+        >
+          <View style={styles.heroTopRow}>
+            <View style={styles.identityRow}>
+              <View style={styles.identitySeal}>
+                <Ionicons name="flash" size={24} color={mobileTheme.background} />
+              </View>
+              <View style={styles.identityCopy}>
+                <Text style={styles.identityTag}>ACTIVE HUNTER</Text>
+                <Text style={styles.identityName}>{hunterName}</Text>
+                <Text style={styles.identityLevel}>LEVEL {hunterLevel} SHADOW RUNNER</Text>
+              </View>
             </View>
-            <View style={styles.identityCopy}>
-              <Text style={styles.identityName}>{profile?.name || auth?.name || 'Hunter'}</Text>
-              <Text style={styles.identityLevel}>LEVEL {profile?.level || auth?.level || 1} HUNTER</Text>
+            <View style={styles.rankPlate}>
+              <Text style={styles.rankPlateLabel}>RANK</Text>
+              <Text style={styles.rankPlateValue}>{hunterLevel >= 25 ? 'MONARCH' : hunterLevel >= 10 ? 'A-CLASS' : 'RISING'}</Text>
             </View>
           </View>
 
-          {/* Progress Bars */}
+          <View style={styles.readoutRow}>
+            <View style={styles.readoutTile}>
+              <Text style={styles.readoutLabel}>STREAK</Text>
+              <Text style={styles.readoutValue}>{currentStreak}D</Text>
+            </View>
+            <View style={styles.readoutTile}>
+              <Text style={styles.readoutLabel}>CLEAR RATE</Text>
+              <Text style={styles.readoutValue}>{completionRatio}%</Text>
+            </View>
+            <View style={styles.readoutTile}>
+              <Text style={styles.readoutLabel}>OPEN GATES</Text>
+              <Text style={styles.readoutValue}>{activeTasks.length}</Text>
+            </View>
+          </View>
+
           <View style={styles.progressContainer}>
             <View style={styles.progressRow}>
               <Text style={styles.progressLabel}>HP</Text>
@@ -77,41 +114,63 @@ export default function DashboardScreen() {
             <View style={styles.progressRow}>
               <Text style={styles.progressLabel}>XP</Text>
               <View style={styles.progressBarBg}>
-                <View style={[styles.progressBarFill, { width: `${xpPercentage}%`, backgroundColor: '#3b82f6' }]} />
+                <View style={[styles.progressBarFill, { width: `${xpPercentage}%`, backgroundColor: mobileTheme.accent }]} />
               </View>
               <Text style={styles.progressValue}>{profile?.xp || auth?.xp || 0}</Text>
             </View>
           </View>
-        </View>
+        </LinearGradient>
 
-        <View style={styles.panel}>
-          <Text style={styles.panelLabel}>CURRENT GATE OBJECTIVE</Text>
-          <Text style={styles.panelTitle}>{nextTask ? nextTask.title : 'No Active Gates.'}</Text>
-          <Text style={styles.panelBody}>
-            {nextTask
-              ? 'Clear this objective to gain experience and close the gate.'
-              : 'The dungeon is quiet. Tap the + button to open a new gate.'}
-          </Text>
-          
-          <View style={styles.statsRow}>
+        <View style={styles.gridRow}>
+          <View style={[styles.panel, styles.mainPanel]}>
+            <Text style={styles.panelLabel}>CURRENT OBJECTIVE</Text>
+            <Text style={styles.panelTitle}>{nextTask ? nextTask.title : 'No active gates detected.'}</Text>
+            <Text style={styles.panelBody}>
+              {nextTask
+                ? 'Clear this objective now to stabilize the sector and keep the streak alive.'
+                : 'The field is quiet. Issue a new quest and force the system to respond.'}
+            </Text>
+
+            <View style={styles.inlineStats}>
+              <View style={styles.inlineStat}>
+                <Text style={styles.inlineStatLabel}>COMPLETED</Text>
+                <Text style={styles.inlineStatValue}>{stats?.completedTasks || 0}</Text>
+              </View>
+              <View style={styles.inlineStat}>
+                <Text style={styles.inlineStatLabel}>TOTAL XP</Text>
+                <Text style={styles.inlineStatValue}>{stats?.totalXP || profile?.xp || auth?.xp || 0}</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.questButton}
+              onPress={() => navigation.navigate('Quests')}
+              accessibilityRole="button"
+            >
+              <Text style={styles.questButtonText}>{nextTask ? 'OPEN QUEST LOG' : 'CREATE FIRST QUEST'}</Text>
+              <Ionicons name="arrow-forward" size={16} color={mobileTheme.text} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.sideColumn}>
             <View style={styles.statTile}>
-              <Text style={styles.statLabel}>Open Tasks</Text>
-              <Text style={styles.statValue}>{activeTasks.length}</Text>
+              <Text style={styles.statLabel}>STREAK PRESSURE</Text>
+              <Text style={styles.statValue}>{currentStreak > 0 ? 'ONLINE' : 'IDLE'}</Text>
+              <Text style={styles.statBody}>One finished task keeps the system awake for tomorrow.</Text>
             </View>
             <View style={styles.statTile}>
-              <Text style={styles.statLabel}>Completed</Text>
-              <Text style={styles.statValue}>{stats?.completedTasks || 0}</Text>
+              <Text style={styles.statLabel}>NEXT REWARD</Text>
+              <Text style={styles.statValue}>{Math.max(100 - ((profile?.xp || auth?.xp || 0) % 100), 0)} XP</Text>
+              <Text style={styles.statBody}>Needed to push the next visible level threshold.</Text>
             </View>
           </View>
         </View>
       </ScrollView>
 
-      {/* Floating Action Button for adding tasks */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => {
-          // Navigation logic or modal trigger to add task
-        }}
+        onPress={() => navigation.navigate('Quests')}
+        accessibilityRole="button"
       >
         <Ionicons name="add" size={32} color="#fff" />
       </TouchableOpacity>
@@ -122,7 +181,7 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#060913',
+    backgroundColor: mobileTheme.background,
   },
   scroll: {
     flex: 1,
@@ -139,48 +198,136 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
   },
+  headerCaption: {
+    marginTop: 4,
+    color: mobileTheme.textDim,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.3,
+    textTransform: 'uppercase',
+  },
+  headerStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: mobileTheme.panelSoft,
+    borderWidth: 1,
+    borderColor: mobileTheme.borderSoft,
+  },
+  headerStatusText: {
+    color: mobileTheme.textMuted,
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 1.2,
+  },
   logoText: {
     fontSize: 24,
     fontWeight: '900',
-    color: '#fff',
+    color: mobileTheme.text,
     letterSpacing: 2,
     fontFamily: 'System',
   },
   heroCard: {
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 24,
+    padding: 22,
     borderWidth: 1,
-    borderColor: 'rgba(59, 130, 246, 0.2)',
-    backgroundColor: 'rgba(59, 130, 246, 0.05)',
+    borderColor: mobileTheme.border,
+  },
+  heroTopRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: 14,
   },
   identityRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 15,
-    marginBottom: 20,
+    gap: 14,
+    flex: 1,
   },
   identitySeal: {
-    height: 50,
-    width: 50,
-    borderRadius: 12,
+    height: 56,
+    width: 56,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3b82f6',
+    backgroundColor: mobileTheme.accent,
   },
   identityCopy: {
     flex: 1,
   },
+  identityTag: {
+    color: mobileTheme.textDim,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.8,
+    textTransform: 'uppercase',
+  },
   identityName: {
-    color: '#fff',
-    fontSize: 22,
+    color: mobileTheme.text,
+    fontSize: 24,
     fontWeight: '900',
+    marginTop: 4,
   },
   identityLevel: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 12,
     fontWeight: '700',
+    letterSpacing: 1.2,
+    marginTop: 4,
+  },
+  rankPlate: {
+    minWidth: 86,
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+    borderWidth: 1,
+    borderColor: mobileTheme.borderSoft,
+    alignItems: 'flex-end',
+  },
+  rankPlateLabel: {
+    color: mobileTheme.textDim,
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 1.6,
+  },
+  rankPlateValue: {
+    marginTop: 6,
+    color: mobileTheme.text,
+    fontSize: 12,
+    fontWeight: '900',
     letterSpacing: 1,
-    marginTop: 2,
+  },
+  readoutRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 18,
+    marginBottom: 18,
+  },
+  readoutTile: {
+    flex: 1,
+    minHeight: 72,
+    borderRadius: 16,
+    padding: 12,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+    borderWidth: 1,
+    borderColor: mobileTheme.borderSoft,
+  },
+  readoutLabel: {
+    color: mobileTheme.textDim,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.4,
+  },
+  readoutValue: {
+    marginTop: 10,
+    color: mobileTheme.text,
+    fontSize: 22,
+    fontWeight: '900',
   },
   progressContainer: {
     gap: 12,
@@ -191,7 +338,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   progressLabel: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: mobileTheme.textMuted,
     fontSize: 12,
     fontWeight: 'bold',
     width: 20,
@@ -199,7 +346,7 @@ const styles = StyleSheet.create({
   progressBarBg: {
     flex: 1,
     height: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderRadius: 4,
     overflow: 'hidden',
   },
@@ -208,7 +355,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   progressValue: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 12,
     fontWeight: 'bold',
     width: 35,
@@ -219,56 +366,109 @@ const styles = StyleSheet.create({
     width: 10,
     borderRadius: 5,
   },
-  healthDotReady: { backgroundColor: '#34D399' },
-  healthDotSlow: { backgroundColor: '#F59E0B' },
+  healthDotReady: { backgroundColor: mobileTheme.success },
+  healthDotSlow: { backgroundColor: mobileTheme.warning },
+  gridRow: {
+    gap: 14,
+  },
   panel: {
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    borderColor: mobileTheme.borderSoft,
+    backgroundColor: mobileTheme.backgroundElevated,
     gap: 12,
   },
+  mainPanel: {
+    paddingBottom: 18,
+  },
   panelLabel: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 1.5,
   },
   panelTitle: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 20,
     fontWeight: 'bold',
   },
   panelBody: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: mobileTheme.textMuted,
     fontSize: 14,
     lineHeight: 20,
   },
-  statsRow: {
+  inlineStats: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 12,
     marginTop: 10,
   },
-  statTile: {
+  inlineStat: {
     flex: 1,
-    borderRadius: 12,
-    padding: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 14,
+    padding: 14,
+    backgroundColor: mobileTheme.blackGlass,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: mobileTheme.borderSoft,
+  },
+  inlineStatLabel: {
+    color: mobileTheme.textDim,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.4,
+  },
+  inlineStatValue: {
+    marginTop: 8,
+    color: mobileTheme.text,
+    fontSize: 22,
+    fontWeight: '900',
+  },
+  sideColumn: {
+    gap: 14,
+  },
+  statTile: {
+    borderRadius: 12,
+    padding: 16,
+    backgroundColor: mobileTheme.blackGlass,
+    borderWidth: 1,
+    borderColor: mobileTheme.borderSoft,
   },
   statLabel: {
-    color: 'rgba(255, 255, 255, 0.4)',
+    color: mobileTheme.textDim,
     fontSize: 10,
     fontWeight: 'bold',
     letterSpacing: 1,
     marginBottom: 5,
   },
   statValue: {
-    color: '#fff',
-    fontSize: 24,
+    color: mobileTheme.text,
+    fontSize: 22,
     fontWeight: '900',
+    marginTop: 8,
+  },
+  statBody: {
+    marginTop: 8,
+    color: mobileTheme.textMuted,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  questButton: {
+    marginTop: 8,
+    minHeight: 48,
+    borderRadius: 14,
+    backgroundColor: mobileTheme.accent,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  questButtonText: {
+    color: mobileTheme.text,
+    fontSize: 12,
+    fontWeight: '900',
+    letterSpacing: 1.2,
   },
   fab: {
     position: 'absolute',
@@ -277,10 +477,10 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#3b82f6',
+    backgroundColor: mobileTheme.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#3b82f6',
+    shadowColor: mobileTheme.accent,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

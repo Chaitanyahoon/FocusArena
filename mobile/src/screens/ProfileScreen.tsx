@@ -2,8 +2,10 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useAppStore } from '../stores/appStore'
 import { useThemeStore, ThemeName } from '../stores/themeStore'
+import { mobileTheme } from '../theme'
 
 export default function ProfileScreen() {
   const { auth, profile, stats, logout } = useAppStore()
@@ -28,25 +30,58 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
         <View style={styles.header}>
           <Text style={[styles.headerTitle, { color: colors.primary }]}>HUNTER PROFILE</Text>
+          <Text style={styles.headerCaption}>Identity ledger</Text>
         </View>
 
-        {/* Identity Card */}
-        <View style={[styles.identityCard, { backgroundColor: colors.cardBg, borderColor: `${colors.primary}25` }]}>
-          <View style={[styles.avatarContainer, { backgroundColor: colors.primary }]}>
-            <Ionicons name="person" size={36} color={colors.background} />
+        <LinearGradient
+          colors={[`${colors.primary}33`, 'rgba(16,21,34,0.95)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.identityCard, { borderColor: `${colors.primary}30` }]}
+        >
+          <View style={styles.identityTopRow}>
+            <View style={[styles.avatarContainer, { backgroundColor: colors.primary }]}>
+              <Ionicons name="person" size={36} color={colors.background} />
+            </View>
+            <View style={styles.identityMain}>
+              <Text style={styles.identityTag}>REGISTERED HUNTER</Text>
+              <Text style={[styles.hunterName, { color: colors.text }]}>{profile?.name || auth?.name || 'Unknown Hunter'}</Text>
+              <Text style={[styles.emailText, { color: colors.muted }]}>{profile?.email || auth?.email || ''}</Text>
+            </View>
           </View>
-          <Text style={[styles.hunterName, { color: colors.text }]}>{profile?.name || auth?.name || 'Unknown Hunter'}</Text>
-          <View style={[styles.levelBadge, { backgroundColor: `${colors.primary}20` }]}>
-            <Ionicons name="shield-checkmark" size={14} color={colors.primary} />
-            <Text style={[styles.levelText, { color: colors.primary }]}>LEVEL {profile?.level || auth?.level || 1}</Text>
-          </View>
-          <Text style={[styles.emailText, { color: colors.muted }]}>{profile?.email || auth?.email || ''}</Text>
-        </View>
 
-        {/* Stats Grid */}
+          <View style={styles.identityStatsRow}>
+            <View style={[styles.levelBadge, { backgroundColor: `${colors.primary}20` }]}>
+              <Ionicons name="shield-checkmark" size={14} color={colors.primary} />
+              <Text style={[styles.levelText, { color: colors.primary }]}>LEVEL {profile?.level || auth?.level || 1}</Text>
+            </View>
+            <View style={styles.rankBadge}>
+              <Text style={styles.rankBadgeLabel}>STATUS</Text>
+              <Text style={styles.rankBadgeValue}>{(profile?.streakCount || stats?.currentStreak || 0) > 0 ? 'ASCENDING' : 'DORMANT'}</Text>
+            </View>
+          </View>
+
+          <View style={styles.identityFootRow}>
+            <View style={styles.identityFootTile}>
+              <Text style={styles.identityFootLabel}>TASKS</Text>
+              <Text style={styles.identityFootValue}>{profile?.totalTasksCompleted || stats?.completedTasks || 0}</Text>
+            </View>
+            <View style={styles.identityFootTile}>
+              <Text style={styles.identityFootLabel}>BADGES</Text>
+              <Text style={styles.identityFootValue}>{profile?.badgesEarned || stats?.badgesEarned || 0}</Text>
+            </View>
+            <View style={styles.identityFootTile}>
+              <Text style={styles.identityFootLabel}>GOLD</Text>
+              <Text style={styles.identityFootValue}>{profile?.gold || 0}</Text>
+            </View>
+          </View>
+        </LinearGradient>
+
+        <View style={styles.sectionHeader}>
+          <Text style={[styles.sectionTitle, { color: colors.muted }]}>SYSTEM READOUT</Text>
+        </View>
         <View style={styles.gridContainer}>
           {statGrid.map((stat, idx) => (
             <View key={idx} style={styles.gridItem}>
@@ -59,9 +94,8 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        {/* Theme Selector */}
         <View style={styles.themeSection}>
-          <Text style={[styles.sectionTitle, { color: colors.muted }]}>CHOOSE YOUR PATH (THEME)</Text>
+          <Text style={[styles.sectionTitle, { color: colors.muted }]}>THEME VAULT</Text>
           <View style={styles.themeRow}>
             {availableThemes.map(t => (
               <TouchableOpacity
@@ -83,7 +117,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Actions */}
         <View style={styles.actionsContainer}>
           <TouchableOpacity style={styles.actionRow} activeOpacity={0.7}>
             <Ionicons name="settings-outline" size={20} color={colors.muted} />
@@ -98,7 +131,6 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Logout */}
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
           <Ionicons name="log-out-outline" size={20} color="#ef4444" />
           <Text style={styles.logoutText}>LOGOUT SYSTEM</Text>
@@ -113,7 +145,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#060913',
+    backgroundColor: mobileTheme.background,
   },
   scrollContent: {
     paddingBottom: 100,
@@ -124,60 +156,133 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   headerTitle: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 24,
     fontWeight: '900',
     letterSpacing: 2,
   },
-
-  // --- Identity Card ---
+  headerCaption: {
+    marginTop: 4,
+    color: mobileTheme.textDim,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.2,
+    textTransform: 'uppercase',
+  },
   identityCard: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(59, 130, 246, 0.06)',
     borderRadius: 20,
     padding: 24,
-    alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(59, 130, 246, 0.15)',
     marginBottom: 20,
+  },
+  identityTopRow: {
+    flexDirection: 'row',
+    gap: 14,
+    alignItems: 'center',
   },
   avatarContainer: {
     width: 72,
     height: 72,
     borderRadius: 20,
-    backgroundColor: '#3b82f6',
+    backgroundColor: mobileTheme.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 14,
+  },
+  identityMain: {
+    flex: 1,
+  },
+  identityTag: {
+    color: mobileTheme.textDim,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.7,
+    textTransform: 'uppercase',
   },
   hunterName: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 22,
     fontWeight: '900',
-    marginBottom: 8,
+    marginTop: 4,
+  },
+  identityStatsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginTop: 18,
   },
   levelBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: 'rgba(59, 130, 246, 0.15)',
     paddingHorizontal: 12,
-    paddingVertical: 5,
+    paddingVertical: 7,
     borderRadius: 20,
-    marginBottom: 8,
   },
   levelText: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 12,
     fontWeight: '900',
     letterSpacing: 1,
   },
-  emailText: {
-    color: 'rgba(255,255,255,0.35)',
+  rankBadge: {
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+    borderWidth: 1,
+    borderColor: mobileTheme.borderSoft,
+    alignItems: 'flex-end',
+  },
+  rankBadgeLabel: {
+    color: mobileTheme.textDim,
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 1.5,
+  },
+  rankBadgeValue: {
+    marginTop: 4,
+    color: mobileTheme.text,
     fontSize: 12,
+    fontWeight: '900',
+  },
+  emailText: {
+    color: mobileTheme.textDim,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  identityFootRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 18,
+  },
+  identityFootTile: {
+    flex: 1,
+    minHeight: 74,
+    borderRadius: 16,
+    padding: 12,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+    borderWidth: 1,
+    borderColor: mobileTheme.borderSoft,
+  },
+  identityFootLabel: {
+    color: mobileTheme.textDim,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.4,
+  },
+  identityFootValue: {
+    marginTop: 10,
+    color: mobileTheme.text,
+    fontSize: 20,
+    fontWeight: '900',
   },
 
-  // --- Stats Grid ---
+  sectionHeader: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -188,12 +293,12 @@ const styles = StyleSheet.create({
   gridItem: {
     width: '30%',
     flexGrow: 1,
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: mobileTheme.panelSoft,
     borderRadius: 14,
     padding: 14,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: mobileTheme.borderSoft,
   },
   gridIconBg: {
     width: 36,
@@ -204,25 +309,26 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   gridValue: {
-    color: '#fff',
-    fontSize: 18,
+    color: mobileTheme.text,
+    fontSize: 16,
     fontWeight: '900',
+    textAlign: 'center',
   },
   gridLabel: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 10,
     fontWeight: '700',
     marginTop: 3,
     letterSpacing: 0.5,
+    textAlign: 'center',
   },
 
-  // --- Actions ---
   actionsContainer: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: mobileTheme.panelSoft,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: mobileTheme.borderSoft,
     marginBottom: 24,
     overflow: 'hidden',
   },
@@ -233,22 +339,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 12,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.05)',
+    borderBottomColor: mobileTheme.borderSoft,
     minHeight: 52,
   },
   actionText: {
     flex: 1,
-    color: 'rgba(255,255,255,0.7)',
+    color: mobileTheme.text,
     fontSize: 15,
     fontWeight: '600',
   },
 
-  // --- Logout ---
   logoutButton: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    backgroundColor: 'rgba(127, 29, 29, 0.24)',
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.3)',
+    borderColor: 'rgba(251, 113, 133, 0.2)',
     borderRadius: 14,
     paddingVertical: 16,
     flexDirection: 'row',
@@ -265,7 +370,7 @@ const styles = StyleSheet.create({
   },
   versionText: {
     textAlign: 'center',
-    color: 'rgba(255,255,255,0.15)',
+    color: mobileTheme.textDim,
     fontSize: 11,
     marginBottom: 20,
   },
@@ -290,11 +395,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
-    backgroundColor: 'rgba(255,255,255,0.02)',
+    borderColor: mobileTheme.borderSoft,
+    backgroundColor: mobileTheme.panelSoft,
   },
   themeButtonText: {
     fontSize: 12,
     fontWeight: '800',
   },
 })
+
+// aria-label

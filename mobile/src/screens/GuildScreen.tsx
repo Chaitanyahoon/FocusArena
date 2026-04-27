@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useAppStore } from '../stores/appStore'
 import { useGuildStore } from '../stores/guildStore'
+import { mobileTheme } from '../theme'
 
 export default function GuildScreen() {
   const { profile } = useAppStore()
@@ -44,7 +45,7 @@ export default function GuildScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {!hasGuild ? (
           <View style={styles.emptyContainer}>
-            <Ionicons name="shield-outline" size={64} color="rgba(255,255,255,0.15)" />
+            <Ionicons name="shield-outline" size={64} color={mobileTheme.textDim} />
             <Text style={styles.emptyTitle}>No Guild Assigned</Text>
             <Text style={styles.emptySubtitle}>
               Join a guild to unlock cooperative raids, shared XP buffs, and the guild chat.
@@ -61,7 +62,7 @@ export default function GuildScreen() {
             <View style={styles.guildCard}>
               <View style={styles.guildHeaderRow}>
                 <View style={styles.guildIcon}>
-                  <Ionicons name="shield" size={32} color="#3b82f6" />
+                  <Ionicons name="shield" size={32} color={mobileTheme.accent} />
                 </View>
                 <View style={styles.guildInfo}>
                   <Text style={styles.guildName}>{currentGuild?.name}</Text>
@@ -86,7 +87,7 @@ export default function GuildScreen() {
             <Text style={styles.sectionTitle}>Active Guild Quests</Text>
             <View style={styles.questCard}>
               <View style={styles.questHeader}>
-                <Ionicons name="skull" size={16} color="#FCA5A5" />
+                <Ionicons name="skull" size={16} color={mobileTheme.danger} />
                 <Text style={styles.questTitle}>Defeat the Sloth Demon</Text>
               </View>
               <View style={styles.progressBarBg}>
@@ -96,7 +97,7 @@ export default function GuildScreen() {
             </View>
 
             <Pressable style={styles.chatButton}>
-              <Ionicons name="chatbubbles" size={20} color="#08111F" />
+              <Ionicons name="chatbubbles" size={20} color={mobileTheme.text} />
               <Text style={styles.chatButtonText}>ENTER GUILD CHAT</Text>
             </Pressable>
           </View>
@@ -110,7 +111,7 @@ export default function GuildScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Form a New Guild</Text>
               <TouchableOpacity onPress={() => setShowCreateModal(false)}>
-                <Ionicons name="close" size={24} color="rgba(255,255,255,0.6)" />
+                <Ionicons name="close" size={24} color={mobileTheme.textMuted} />
               </TouchableOpacity>
             </View>
 
@@ -131,7 +132,7 @@ export default function GuildScreen() {
               disabled={!newGuildName.trim() || isLoading}
             >
               {isLoading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color={mobileTheme.text} />
               ) : (
                 <Text style={styles.primaryButtonText}>ESTABLISH GUILD</Text>
               )}
@@ -147,7 +148,7 @@ export default function GuildScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#060913',
+    backgroundColor: mobileTheme.background,
   },
   header: {
     paddingHorizontal: 20,
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   headerTitle: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 24,
     fontWeight: '900',
     letterSpacing: 2,
@@ -171,13 +172,13 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   emptyTitle: {
-    color: 'rgba(255,255,255,0.8)',
+    color: mobileTheme.text,
     fontSize: 20,
     fontWeight: 'bold',
     marginTop: 8,
   },
   emptySubtitle: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textMuted,
     fontSize: 14,
     textAlign: 'center',
     paddingHorizontal: 30,
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   primaryButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: mobileTheme.accent,
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 16,
@@ -193,15 +194,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 1.5,
   },
   secondaryButton: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: mobileTheme.panelSoft,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: mobileTheme.borderSoft,
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 16,
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryButtonText: {
-    color: 'rgba(255,255,255,0.8)',
+    color: mobileTheme.textMuted,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 1.5,
@@ -218,11 +219,11 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   guildCard: {
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: mobileTheme.panel,
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: mobileTheme.borderSoft,
   },
   guildHeaderRow: {
     flexDirection: 'row',
@@ -234,23 +235,23 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 16,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    backgroundColor: mobileTheme.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(59, 130, 246, 0.3)',
+    borderColor: mobileTheme.border,
   },
   guildInfo: {
     flex: 1,
   },
   guildName: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 22,
     fontWeight: '800',
     marginBottom: 4,
   },
   guildMeta: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 13,
     fontWeight: '700',
   },
@@ -260,25 +261,25 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: mobileTheme.blackGlass,
     padding: 12,
     borderRadius: 12,
     alignItems: 'center',
   },
   statValue: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 18,
     fontWeight: '800',
   },
   statLabel: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 1,
     marginTop: 4,
   },
   sectionTitle: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 12,
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -286,11 +287,11 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   questCard: {
-    backgroundColor: 'rgba(255,255,255,0.02)',
+    backgroundColor: mobileTheme.panelSoft,
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: mobileTheme.borderSoft,
   },
   questHeader: {
     flexDirection: 'row',
@@ -299,13 +300,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   questTitle: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 15,
     fontWeight: '700',
   },
   progressBarBg: {
     height: 8,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: mobileTheme.blackGlass,
     borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
@@ -316,13 +317,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   questProgressText: {
-    color: 'rgba(255,255,255,0.5)',
+    color: mobileTheme.textMuted,
     fontSize: 11,
     fontWeight: '600',
     textAlign: 'right',
   },
   chatButton: {
-    backgroundColor: '#F4F7FB',
+    backgroundColor: mobileTheme.accent,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -332,7 +333,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   chatButtonText: {
-    color: '#08111F',
+    color: mobileTheme.text,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 1.5,
@@ -343,13 +344,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#0A1020',
+    backgroundColor: mobileTheme.backgroundElevated,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 24,
     paddingBottom: 40,
     borderWidth: 1,
-    borderColor: 'rgba(59,130,246,0.3)',
+    borderColor: mobileTheme.border,
     borderBottomWidth: 0,
   },
   modalHeader: {
@@ -359,25 +360,25 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   modalTitle: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: 1,
   },
   inputLabel: {
-    color: 'rgba(255,255,255,0.6)',
+    color: mobileTheme.textMuted,
     fontSize: 12,
     fontWeight: '800',
     marginBottom: 8,
     letterSpacing: 1,
   },
   textInput: {
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: mobileTheme.panelSoft,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: mobileTheme.borderSoft,
     borderRadius: 12,
     padding: 16,
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 16,
     marginBottom: 16,
   },

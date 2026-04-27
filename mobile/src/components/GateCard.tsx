@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View, Pressable } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
 import { Ionicons } from '@expo/vector-icons'
 import type { Gate } from '../types'
+import { mobileTheme } from '../theme'
 
 interface GateCardProps {
   gate: Gate
@@ -11,12 +11,12 @@ interface GateCardProps {
 
 function getRankColor(rank: number) {
   switch (rank) {
-    case 5: return ['#F59E0B', '#D97706'] // S - Gold
-    case 4: return ['#EC4899', '#BE185D'] // A - Pink/Purple
-    case 3: return ['#8B5CF6', '#6D28D9'] // B - Purple
-    case 2: return ['#3B82F6', '#1D4ED8'] // C - Blue
-    case 1: return ['#10B981', '#047857'] // D - Green
-    default: return ['#6B7280', '#374151'] // E - Gray
+    case 5: return '#F6C177'
+    case 4: return '#C4B5FD'
+    case 3: return '#8B5CF6'
+    case 2: return '#7C5CFF'
+    case 1: return '#67E8A5'
+    default: return '#7B8191'
   }
 }
 
@@ -32,27 +32,20 @@ function getRankLabel(rank: number) {
 }
 
 export default function GateCard({ gate, onAction }: GateCardProps) {
-  const rankColors = getRankColor(gate.rank)
+  const rankColor = getRankColor(gate.rank)
 
   return (
     <View style={styles.cardWrapper}>
-      <LinearGradient
-        colors={[...rankColors, '#0A1020'] as any}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={styles.gradientBackground}
-      />
-      
       <View style={styles.content}>
         <View style={styles.header}>
-          <View style={styles.rankBadge}>
+          <View style={[styles.rankBadge, { borderColor: `${rankColor}66`, backgroundColor: `${rankColor}16` }]}>
             <Text style={styles.rankText}>{getRankLabel(gate.rank)}</Text>
           </View>
           <View style={styles.typeBadge}>
             <Ionicons 
               name={gate.type === 2 ? 'warning' : 'skull'} 
               size={12} 
-              color="#F4F7FB" 
+              color={mobileTheme.text} 
             />
             <Text style={styles.typeText}>
               {gate.type === 2 ? 'ANOMALY' : 'DUNGEON'}
@@ -93,12 +86,8 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    backgroundColor: '#060913',
-  },
-  gradientBackground: {
-    ...StyleSheet.absoluteFillObject,
-    opacity: 0.15,
+    borderColor: mobileTheme.border,
+    backgroundColor: mobileTheme.panel,
   },
   content: {
     padding: 20,
@@ -110,15 +99,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rankBadge: {
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   rankText: {
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 12,
     fontWeight: '800',
     letterSpacing: 1,
@@ -127,13 +114,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(239, 68, 68, 0.2)', // Red tint for danger
+    backgroundColor: 'rgba(251, 113, 133, 0.14)',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 12,
   },
   typeText: {
-    color: '#FCA5A5',
+    color: mobileTheme.danger,
     fontSize: 10,
     fontWeight: '800',
     letterSpacing: 1,
@@ -142,13 +129,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   gateName: {
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 24,
     fontWeight: '800',
     letterSpacing: -0.5,
   },
   bossTitle: {
-    color: 'rgba(231, 237, 246, 0.7)',
+    color: mobileTheme.textMuted,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -158,38 +145,40 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: mobileTheme.blackGlass,
     borderRadius: 16,
     padding: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: mobileTheme.borderSoft,
   },
   statLabel: {
-    color: 'rgba(231, 237, 246, 0.4)',
+    color: mobileTheme.textDim,
     fontSize: 10,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   statValue: {
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 16,
     fontWeight: '800',
     marginTop: 4,
   },
   actionButton: {
-    backgroundColor: '#F4F7FB',
+    backgroundColor: mobileTheme.accent,
     borderRadius: 16,
-    paddingVertical: 16, // Ensure 48px min height
+    paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 8,
   },
   actionButtonText: {
-    color: '#08111F',
+    color: mobileTheme.text,
     fontSize: 13,
     fontWeight: '800',
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
 })
+
+// aria-label

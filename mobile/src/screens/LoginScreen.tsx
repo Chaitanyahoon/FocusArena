@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useAppStore } from '../stores/appStore'
+import { mobileTheme } from '../theme'
 
 export default function LoginScreen({ navigation }: any) {
   const { login, authLoading, error, setError } = useAppStore()
@@ -26,7 +27,7 @@ export default function LoginScreen({ navigation }: any) {
   }
 
   return (
-    <LinearGradient colors={['#060913', '#0A1020', '#060913']} style={styles.container}>
+    <LinearGradient colors={[mobileTheme.background, mobileTheme.backgroundElevated, mobileTheme.background]} style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.loginWrapper}
@@ -64,7 +65,7 @@ export default function LoginScreen({ navigation }: any) {
 
           <Pressable onPress={handleLogin} disabled={authLoading} style={styles.loginButton}>
             {authLoading ? (
-              <ActivityIndicator color="#08111F" />
+              <ActivityIndicator color={mobileTheme.text} />
             ) : (
               <Text style={styles.loginButtonLabel}>Enter arena</Text>
             )}
@@ -92,13 +93,13 @@ const styles = StyleSheet.create({
   loginCard: {
     borderRadius: 30,
     borderWidth: 1,
-    borderColor: 'rgba(231, 237, 246, 0.08)',
-    backgroundColor: 'rgba(10, 14, 26, 0.82)',
+    borderColor: mobileTheme.border,
+    backgroundColor: 'rgba(10, 13, 22, 0.92)',
     padding: 22,
     gap: 14,
   },
   eyebrow: {
-    color: 'rgba(231, 237, 246, 0.42)',
+    color: mobileTheme.textDim,
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 2.2,
@@ -106,13 +107,13 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     marginTop: 8,
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 30,
     fontWeight: '800',
     letterSpacing: -0.6,
   },
   loginSubtitle: {
-    color: 'rgba(231, 237, 246, 0.52)',
+    color: mobileTheme.textMuted,
     fontSize: 14,
     lineHeight: 22,
     fontWeight: '600',
@@ -121,11 +122,11 @@ const styles = StyleSheet.create({
   input: {
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderColor: mobileTheme.borderSoft,
+    backgroundColor: mobileTheme.panelSoft,
     paddingHorizontal: 16,
     paddingVertical: 14, // Minimum 48px touch target essentially
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 15,
     fontWeight: '600',
     minHeight: 48,
@@ -147,13 +148,13 @@ const styles = StyleSheet.create({
   loginButton: {
     marginTop: 6,
     borderRadius: 18,
-    backgroundColor: '#F4F7FB',
+    backgroundColor: mobileTheme.accent,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 52, // Mobile touch target best practices
   },
   loginButtonLabel: {
-    color: '#08111F',
+    color: mobileTheme.text,
     fontSize: 12,
     fontWeight: '800',
     letterSpacing: 1.8,
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   switchModeText: {
-    color: 'rgba(231, 237, 246, 0.6)',
+    color: mobileTheme.textMuted,
     fontSize: 13,
     fontWeight: '600',
   },

@@ -12,32 +12,32 @@ export interface ThemeColors {
 
 const THEMES: Record<ThemeName, ThemeColors> = {
   obsidian: {
-    primary: '#A78BFA', // Purple
-    background: '#060913',
-    cardBg: 'rgba(255,255,255,0.03)',
-    text: '#F4F7FB',
-    muted: 'rgba(255,255,255,0.4)',
+    primary: '#8B5CF6',
+    background: '#05070D',
+    cardBg: 'rgba(139,92,246,0.10)',
+    text: '#EEF2FF',
+    muted: 'rgba(238,242,255,0.45)',
   },
   midnight: {
-    primary: '#3b82f6', // Blue
-    background: '#0A1020',
-    cardBg: 'rgba(59,130,246,0.05)',
-    text: '#F4F7FB',
-    muted: 'rgba(255,255,255,0.4)',
+    primary: '#7C5CFF',
+    background: '#05070D',
+    cardBg: 'rgba(124,92,255,0.10)',
+    text: '#EEF2FF',
+    muted: 'rgba(238,242,255,0.45)',
   },
   forest: {
-    primary: '#10b981', // Emerald
-    background: '#06130C',
-    cardBg: 'rgba(16,185,129,0.05)',
-    text: '#F4F7FB',
-    muted: 'rgba(255,255,255,0.4)',
+    primary: '#34D399',
+    background: '#050A08',
+    cardBg: 'rgba(52,211,153,0.10)',
+    text: '#EEF8F4',
+    muted: 'rgba(238,248,244,0.45)',
   },
   crimson: {
-    primary: '#ef4444', // Red
-    background: '#130606',
-    cardBg: 'rgba(239,68,68,0.05)',
-    text: '#F4F7FB',
-    muted: 'rgba(255,255,255,0.4)',
+    primary: '#FB7185',
+    background: '#0C0507',
+    cardBg: 'rgba(251,113,133,0.10)',
+    text: '#FFF1F4',
+    muted: 'rgba(255,241,244,0.45)',
   },
 }
 
@@ -48,7 +48,7 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  currentTheme: 'midnight',
-  colors: THEMES['midnight'],
+  currentTheme: 'obsidian',
+  colors: THEMES['obsidian'],
   setTheme: (theme: ThemeName) => set({ currentTheme: theme, colors: THEMES[theme] }),
 }))

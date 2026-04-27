@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useSocialStore } from '../stores/socialStore'
 import type { LeaderboardEntry, ChatUser } from '../types'
+import { mobileTheme } from '../theme'
 
 type ActiveView = 'leaderboard' | 'messages'
 
@@ -115,14 +116,14 @@ export default function SocialScreen() {
           style={[styles.segment, activeView === 'leaderboard' && styles.segmentActive]}
           onPress={() => setActiveView('leaderboard')}
         >
-          <Ionicons name="trophy" size={16} color={activeView === 'leaderboard' ? '#3b82f6' : 'rgba(255,255,255,0.4)'} />
+          <Ionicons name="trophy" size={16} color={activeView === 'leaderboard' ? mobileTheme.accent : mobileTheme.textDim} />
           <Text style={[styles.segmentText, activeView === 'leaderboard' && styles.segmentTextActive]}>Leaderboard</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.segment, activeView === 'messages' && styles.segmentActive]}
           onPress={() => setActiveView('messages')}
         >
-          <Ionicons name="chatbubbles" size={16} color={activeView === 'messages' ? '#3b82f6' : 'rgba(255,255,255,0.4)'} />
+          <Ionicons name="chatbubbles" size={16} color={activeView === 'messages' ? mobileTheme.accent : mobileTheme.textDim} />
           <Text style={[styles.segmentText, activeView === 'messages' && styles.segmentTextActive]}>Messages</Text>
         </TouchableOpacity>
       </View>
@@ -152,10 +153,10 @@ export default function SocialScreen() {
           keyExtractor={(item) => item.userId.toString()}
           renderItem={renderLeaderboardItem}
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor="#3b82f6" />}
+          refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor={mobileTheme.accent} />}
           ListEmptyComponent={
             isLoading ? (
-              <ActivityIndicator color="#3b82f6" style={{ marginTop: 40 }} />
+              <ActivityIndicator color={mobileTheme.accent} style={{ marginTop: 40 }} />
             ) : (
               <EmptyState icon="trophy-outline" title="No Rankings Yet" subtitle="The arena awaits its first champions." />
             )
@@ -167,10 +168,10 @@ export default function SocialScreen() {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderChatItem}
           contentContainerStyle={styles.listContent}
-          refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor="#3b82f6" />}
+          refreshControl={<RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor={mobileTheme.accent} />}
           ListEmptyComponent={
             isLoading ? (
-              <ActivityIndicator color="#3b82f6" style={{ marginTop: 40 }} />
+              <ActivityIndicator color={mobileTheme.accent} style={{ marginTop: 40 }} />
             ) : (
               <EmptyState icon="chatbubbles-outline" title="No Conversations" subtitle="Find hunters to chat with from the leaderboard." />
             )
@@ -184,7 +185,7 @@ export default function SocialScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#060913',
+    backgroundColor: mobileTheme.background,
   },
   header: {
     paddingHorizontal: 20,
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   headerTitle: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 24,
     fontWeight: '900',
     letterSpacing: 2,
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
   segmentedControl: {
     flexDirection: 'row',
     marginHorizontal: 20,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: mobileTheme.panelSoft,
     borderRadius: 12,
     padding: 4,
     marginBottom: 12,
@@ -217,15 +218,15 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   segmentActive: {
-    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+    backgroundColor: mobileTheme.accentSoft,
   },
   segmentText: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 13,
     fontWeight: '700',
   },
   segmentTextActive: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
   },
 
   // --- Sub Tabs ---
@@ -240,19 +241,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    borderColor: mobileTheme.borderSoft,
   },
   subTabActive: {
-    backgroundColor: 'rgba(59, 130, 246, 0.15)',
-    borderColor: '#3b82f6',
+    backgroundColor: mobileTheme.accentSoft,
+    borderColor: mobileTheme.border,
   },
   subTabText: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 12,
     fontWeight: '700',
   },
   subTabTextActive: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
   },
 
   // --- List ---
@@ -265,12 +266,12 @@ const styles = StyleSheet.create({
   lbRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: mobileTheme.panelSoft,
     borderRadius: 14,
     padding: 14,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: mobileTheme.borderSoft,
     gap: 12,
   },
   rankBadge: {
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: mobileTheme.blackGlass,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -296,18 +297,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   lbName: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 15,
     fontWeight: '800',
   },
   lbMeta: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 11,
     fontWeight: '600',
     marginTop: 2,
   },
   lbXp: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontSize: 14,
     fontWeight: '900',
   },
@@ -316,12 +317,12 @@ const styles = StyleSheet.create({
   chatRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: mobileTheme.panelSoft,
     borderRadius: 14,
     padding: 14,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: mobileTheme.borderSoft,
     gap: 12,
     minHeight: 64, // ≥ 48px touch target
   },
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: mobileTheme.blackGlass,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -341,20 +342,20 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#34D399',
+    backgroundColor: mobileTheme.success,
     borderWidth: 2,
-    borderColor: '#060913',
+    borderColor: mobileTheme.background,
   },
   chatInfo: {
     flex: 1,
   },
   chatName: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 15,
     fontWeight: '800',
   },
   chatLastMsg: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 12,
     marginTop: 3,
   },
@@ -362,13 +363,13 @@ const styles = StyleSheet.create({
     minWidth: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: '#3b82f6',
+    backgroundColor: mobileTheme.accent,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 6,
   },
   unreadText: {
-    color: '#fff',
+    color: mobileTheme.text,
     fontSize: 11,
     fontWeight: '900',
   },
@@ -381,12 +382,12 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   emptyTitle: {
-    color: 'rgba(255,255,255,0.5)',
+    color: mobileTheme.textMuted,
     fontSize: 18,
     fontWeight: 'bold',
   },
   emptySubtitle: {
-    color: 'rgba(255,255,255,0.25)',
+    color: mobileTheme.textDim,
     fontSize: 13,
     textAlign: 'center',
     paddingHorizontal: 40,

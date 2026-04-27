@@ -14,6 +14,7 @@ import {
 import { useAppStore } from '../stores/appStore'
 import TaskCard from '../components/TaskCard'
 import type { Task } from '../types'
+import { mobileTheme } from '../theme'
 
 const CATEGORIES = [
   { id: 0, label: 'Main Quest' },
@@ -118,7 +119,7 @@ export default function QuestsScreen() {
         keyExtractor={keyExtractor}
         contentContainerStyle={styles.listContent}
         refreshControl={
-          <RefreshControl refreshing={dashboardLoading} onRefresh={hydrateDashboard} tintColor="#F4F7FB" />
+          <RefreshControl refreshing={dashboardLoading} onRefresh={hydrateDashboard} tintColor={mobileTheme.accent} />
         }
         ListEmptyComponent={
           <View style={styles.emptyState}>
@@ -195,14 +196,14 @@ export default function QuestsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A1020',
+    backgroundColor: mobileTheme.background,
   },
   header: {
     padding: 18,
     paddingTop: 60,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(231, 237, 246, 0.08)',
-    backgroundColor: 'rgba(9, 13, 24, 0.95)',
+    borderBottomColor: mobileTheme.borderSoft,
+    backgroundColor: mobileTheme.backgroundElevated,
   },
   panelHeadingRow: {
     flexDirection: 'row',
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   panelLabel: {
-    color: 'rgba(231, 237, 246, 0.42)',
+    color: mobileTheme.textDim,
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 2,
@@ -218,21 +219,21 @@ const styles = StyleSheet.create({
   },
   heroTitle: {
     marginTop: 4,
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 28,
     fontWeight: '800',
     letterSpacing: -0.6,
   },
   primaryChip: {
     borderRadius: 14,
-    backgroundColor: '#F4F7FB',
+    backgroundColor: mobileTheme.accent,
     paddingHorizontal: 16,
     paddingVertical: 10,
     minHeight: 44,
     justifyContent: 'center',
   },
   primaryChipLabel: {
-    color: '#09111F',
+    color: mobileTheme.text,
     fontSize: 11,
     fontWeight: '900',
     textTransform: 'uppercase',
@@ -245,20 +246,20 @@ const styles = StyleSheet.create({
   emptyState: {
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
-    backgroundColor: 'rgba(0, 0, 0, 0.18)',
+    borderColor: mobileTheme.borderSoft,
+    backgroundColor: mobileTheme.panel,
     padding: 24,
     alignItems: 'center',
     marginTop: 20,
   },
   emptyTitle: {
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 16,
     fontWeight: '800',
     marginBottom: 8,
   },
   emptyBody: {
-    color: 'rgba(231, 237, 246, 0.5)',
+    color: mobileTheme.textMuted,
     fontSize: 13,
     lineHeight: 18,
     textAlign: 'center',
@@ -275,14 +276,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   footerLabel: {
-    color: 'rgba(231, 237, 246, 0.42)',
+    color: mobileTheme.textDim,
     fontSize: 11,
     fontWeight: '800',
     letterSpacing: 1.4,
     textTransform: 'uppercase',
   },
   footerXp: {
-    color: 'rgba(52, 211, 153, 0.6)',
+    color: mobileTheme.success,
     fontSize: 11,
     fontWeight: '800',
   },
@@ -291,9 +292,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    backgroundColor: mobileTheme.panelSoft,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: mobileTheme.borderSoft,
     borderRadius: 12,
     marginBottom: 8,
   },
@@ -304,12 +305,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   completedTitle: {
-    color: 'rgba(231, 237, 246, 0.5)',
+    color: mobileTheme.textMuted,
     fontSize: 14,
     textDecorationLine: 'line-through',
   },
   completedXp: {
-    color: 'rgba(52, 211, 153, 0.5)',
+    color: mobileTheme.success,
     fontSize: 12,
     fontWeight: '700',
   },
@@ -339,11 +340,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#0A1020',
+    backgroundColor: mobileTheme.backgroundElevated,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: mobileTheme.border,
     padding: 24,
     paddingBottom: 40,
     gap: 16,
@@ -355,7 +356,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   modalTitle: {
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 20,
     fontWeight: '900',
   },
@@ -367,17 +368,17 @@ const styles = StyleSheet.create({
   modalInput: {
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderColor: mobileTheme.borderSoft,
+    backgroundColor: mobileTheme.panelSoft,
     paddingHorizontal: 16,
     paddingVertical: 16,
-    color: '#F4F7FB',
+    color: mobileTheme.text,
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
   },
   sectionLabel: {
-    color: 'rgba(255,255,255,0.4)',
+    color: mobileTheme.textDim,
     fontSize: 11,
     fontWeight: '800',
     textTransform: 'uppercase',
@@ -393,32 +394,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: mobileTheme.panelSoft,
     borderWidth: 1,
     borderColor: 'transparent',
   },
   pillActive: {
-    backgroundColor: 'rgba(59, 130, 246, 0.15)',
-    borderColor: 'rgba(59, 130, 246, 0.4)',
+    backgroundColor: mobileTheme.accentSoft,
+    borderColor: mobileTheme.border,
   },
   pillText: {
-    color: 'rgba(255,255,255,0.5)',
+    color: mobileTheme.textMuted,
     fontSize: 13,
     fontWeight: '600',
   },
   pillTextActive: {
-    color: '#3b82f6',
+    color: mobileTheme.accent,
     fontWeight: '800',
   },
   submitButton: {
-    backgroundColor: '#F4F7FB',
+    backgroundColor: mobileTheme.accent,
     borderRadius: 16,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 16,
   },
   submitButtonText: {
-    color: '#08111F',
+    color: mobileTheme.text,
     fontSize: 13,
     fontWeight: '900',
     letterSpacing: 1.5,

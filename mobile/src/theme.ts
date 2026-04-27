@@ -1,0 +1,17 @@
+export const mobileTheme = {
+  background: '#05070D',
+  backgroundElevated: '#0A0D16',
+  panel: '#101522',
+  panelSoft: 'rgba(255,255,255,0.03)',
+  border: 'rgba(124, 92, 255, 0.18)',
+  borderSoft: 'rgba(255,255,255,0.06)',
+  accent: '#7C5CFF',
+  accentSoft: 'rgba(124, 92, 255, 0.16)',
+  text: '#EEF2FF',
+  textMuted: 'rgba(238, 242, 255, 0.58)',
+  textDim: 'rgba(238, 242, 255, 0.34)',
+  success: '#67E8A5',
+  danger: '#FB7185',
+  warning: '#F6C177',
+  blackGlass: 'rgba(0,0,0,0.34)',
+} as const
