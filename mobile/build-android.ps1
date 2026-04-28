@@ -26,14 +26,14 @@ if ($LASTEXITCODE -ne 0) {
 Set-Location ..
 
 Write-Host "📋 Step 3/3: Copying APK to builds directory..." -ForegroundColor Blue
-$apkPath = "android\app\build\outputs\apk\release\app-release-unsigned.apk"
+$apkPath = "android\app\build\outputs\apk\release\app-release.apk"
 $buildDir = "builds"
 
 if (-Not (Test-Path $buildDir)) {
     New-Item -ItemType Directory -Path $buildDir | Out-Null
 }
 
-$destination = "$buildDir\app-release-unsigned.apk"
+$destination = "$buildDir\app-release.apk"
 Copy-Item $apkPath -Destination $destination -Force
 
 Write-Host "✅ Success! Release APK generated at: FocusArena\mobile\$destination" -ForegroundColor Green
