@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,3 +47,16 @@ jobs:
         name: focusarena-release-apk
         path: mobile/android/app/build/outputs/apk/release/app-release-unsigned.apk
         retention-days: 7
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: release-v1.0.${{ github.run_number }}
+        name: FocusArena Android v1.0.${{ github.run_number }}
+        body: |
+          🚀 New Android Native Release!
+          
+          This is an automatically generated unsigned standalone APK.
+        files: mobile/android/app/build/outputs/apk/release/app-release-unsigned.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
