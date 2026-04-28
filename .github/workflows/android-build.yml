@@ -1,0 +1,46 @@
+name: Android Release Build
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+        cache-dependency-path: mobile/package-lock.json
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Install npm dependencies
+      working-directory: ./mobile
+      run: npm ci
+
+    - name: Make Gradlew Executable
+      working-directory: ./mobile/android
+      run: chmod +x gradlew
+
+    - name: Build Android Release APK
+      working-directory: ./mobile/android
+      run: ./gradlew assembleRelease -PversionCode=${{ github.run_number }} -PversionName=1.0.${{ github.run_number }}
+      
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: focusarena-release-apk
+        path: mobile/android/app/build/outputs/apk/release/app-release-unsigned.apk
+        retention-days: 7

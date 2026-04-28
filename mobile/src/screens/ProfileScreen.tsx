@@ -1,13 +1,15 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Linking, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useNavigation } from '@react-navigation/native'
 import { useAppStore } from '../stores/appStore'
 import { useThemeStore, ThemeName } from '../stores/themeStore'
 import { mobileTheme } from '../theme'
 
 export default function ProfileScreen() {
+  const navigation = useNavigation<any>()
   const { auth, profile, stats, logout } = useAppStore()
   const { currentTheme, colors, setTheme } = useThemeStore()
 
@@ -118,13 +120,19 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.actionsContainer}>
-          <TouchableOpacity style={styles.actionRow} activeOpacity={0.7}>
-            <Ionicons name="settings-outline" size={20} color={colors.muted} />
-            <Text style={[styles.actionText, { color: colors.text }]}>Settings</Text>
+          <TouchableOpacity style={styles.actionRow} activeOpacity={0.7} onPress={() => navigation.navigate('Shop')}>
+            <Ionicons name="storefront-outline" size={20} color={colors.muted} />
+            <Text style={[styles.actionText, { color: colors.text }]}>Hunter Shop</Text>
             <Ionicons name="chevron-forward" size={18} color={colors.muted} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionRow} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.actionRow} activeOpacity={0.7} onPress={() => navigation.navigate('DailyQuests')}>
+            <Ionicons name="today-outline" size={20} color={colors.muted} />
+            <Text style={[styles.actionText, { color: colors.text }]}>Daily Contracts</Text>
+            <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionRow} activeOpacity={0.7} onPress={() => Linking.openURL('https://github.com/Chaitanyahoon/focusarenaa')}>
             <Ionicons name="help-circle-outline" size={20} color={colors.muted} />
             <Text style={[styles.actionText, { color: colors.text }]}>Help & Support</Text>
             <Ionicons name="chevron-forward" size={18} color={colors.muted} />

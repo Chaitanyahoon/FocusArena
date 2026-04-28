@@ -139,3 +139,92 @@ export interface CreateGuildDto {
 export interface JoinGuildDto {
   inviteCode?: string
 }
+
+// ── Daily Quests ──────────────────────────────────────────
+export interface DailyQuest {
+  id: number
+  title: string
+  description: string
+  targetCount: number
+  unit: string
+  difficulty: number
+  currentCount: number
+  isCompleted: boolean
+  createdAt: string
+  lastProgressAt?: string
+}
+
+export interface DailyQuestStatus {
+  totalQuests: number
+  completedQuests: number
+  isAllCompleted: boolean
+  hasPenalty: boolean
+}
+
+export interface CreateDailyQuestDto {
+  title: string
+  targetCount: number
+  unit: string
+  difficulty: number
+}
+
+// ── Shop ──────────────────────────────────────────────────
+export interface ShopItem {
+  id: number
+  name: string
+  description?: string
+  price: number
+  imageUrl?: string
+  type: string // Consumable, Cosmetic, Passive
+  effectData?: string
+}
+
+export interface InventoryItem {
+  id: number
+  userId: number
+  shopItemId: number
+  quantity: number
+  acquiredDate: string
+  shopItem?: ShopItem
+}
+
+// ── Friends ───────────────────────────────────────────────
+export interface FriendEntry {
+  id: number
+  friendId: number
+  name: string
+  avatarUrl?: string
+  level: number
+  status: number // 0=Pending, 1=Accepted, 2=Declined, 3=Blocked
+  isIncoming: boolean
+  sentAt: string
+}
+
+// ── Guild Raids ───────────────────────────────────────────
+export interface GuildRaid {
+  id: number
+  guildId: number
+  title: string
+  description?: string
+  status: number // 0=Active, 1=Cleared, 2=Failed
+  totalHP: number
+  currentHP: number
+  bossName: string
+  createdAt: string
+  clearedAt?: string
+}
+
+export interface StartRaidDto {
+  title: string
+  description?: string
+  bossName?: string
+  totalHP: number
+}
+
+export interface AssignRaidTaskDto {
+  raidId: number
+  targetUserId: number
+  title: string
+  description?: string
+  difficulty: number
+}

@@ -11,6 +11,9 @@ import {
   View,
   KeyboardAvoidingView,
 } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useAppStore } from '../stores/appStore'
 import TaskCard from '../components/TaskCard'
 import type { Task } from '../types'
@@ -30,6 +33,7 @@ const DIFFICULTIES = [
 ]
 
 export default function QuestsScreen() {
+  const navigation = useNavigation<any>()
   const { tasks, completeTask, createTask, deleteTask, hydrateDashboard, dashboardLoading } = useAppStore()
   
   // Modal State
@@ -101,17 +105,32 @@ export default function QuestsScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <LinearGradient
+        colors={['rgba(124,92,255,0.16)', 'rgba(5,7,13,0.98)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
         <View style={styles.panelHeadingRow}>
           <View>
             <Text style={styles.panelLabel}>Active Contracts</Text>
             <Text style={styles.heroTitle}>{activeTasks.length} Quests</Text>
           </View>
           <Pressable onPress={() => setModalVisible(true)} style={styles.primaryChip} accessibilityRole="button">
-            <Text style={styles.primaryChipLabel}>+ NEW QUEST</Text>
+            <Ionicons name="add" size={16} color={mobileTheme.text} />
+            <Text style={styles.primaryChipLabel}>NEW</Text>
           </Pressable>
         </View>
-      </View>
+        <TouchableOpacity
+          style={styles.dailyLink}
+          onPress={() => navigation.navigate('DailyQuests')}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="today" size={16} color={mobileTheme.accent} />
+          <Text style={styles.dailyLinkText}>OPEN DAILY CONTRACTS</Text>
+          <Ionicons name="chevron-forward" size={14} color={mobileTheme.textDim} />
+        </TouchableOpacity>
+      </LinearGradient>
 
       <FlatList
         data={activeTasks}
@@ -199,11 +218,14 @@ const styles = StyleSheet.create({
     backgroundColor: mobileTheme.background,
   },
   header: {
-    padding: 18,
-    paddingTop: 60,
-    borderBottomWidth: 1,
-    borderBottomColor: mobileTheme.borderSoft,
-    backgroundColor: mobileTheme.backgroundElevated,
+    marginHorizontal: 18,
+    marginTop: 60,
+    marginBottom: 8,
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: mobileTheme.border,
+    gap: 14,
   },
   panelHeadingRow: {
     flexDirection: 'row',
@@ -227,10 +249,13 @@ const styles = StyleSheet.create({
   primaryChip: {
     borderRadius: 14,
     backgroundColor: mobileTheme.accent,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 10,
     minHeight: 44,
     justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   primaryChipLabel: {
     color: mobileTheme.text,
@@ -238,6 +263,23 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     textTransform: 'uppercase',
     letterSpacing: 1.4,
+  },
+  dailyLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: mobileTheme.borderSoft,
+  },
+  dailyLinkText: {
+    color: mobileTheme.textMuted,
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 1.2,
+    flex: 1,
   },
   listContent: {
     padding: 18,

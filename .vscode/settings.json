@@ -1,0 +1,8 @@
+{
+  "java.import.exclusions": [
+    "**/node_modules/**"
+  ],
+  "java.project.resourceFilters": [
+    "node_modules"
+  ]
+}
